@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * UserDTOOut - defines the data transfer object for an outgoing user object.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
