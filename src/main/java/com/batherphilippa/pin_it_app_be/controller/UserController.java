@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+/**
+ * UserController - controller to manage CRUD operations for a registering or registered users.
+ */
 @Validated
 @RestController
 public class UserController {
