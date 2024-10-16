@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * UserRepo - the User Repository containing additional helper methods.
+ */
 @Repository
 public interface UserRepo extends CrudRepository<User, Long> {
 
