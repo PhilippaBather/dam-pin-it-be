@@ -5,6 +5,9 @@ import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
 
 import java.util.Set;
 
+/**
+ * IUserService - User Service interface defining the methods to be used.
+ */
 public interface IUserService {
 
     Set<UserDTOOut> findAll();

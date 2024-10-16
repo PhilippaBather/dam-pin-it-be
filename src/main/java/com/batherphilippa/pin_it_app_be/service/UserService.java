@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * UserService - the implementation of the User Service interface (IUserService).
+ */
 @Service
 public class UserService implements IUserService{
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
