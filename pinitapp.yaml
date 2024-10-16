@@ -166,15 +166,6 @@ components:
     UserDTOIn:
       type: object
       properties:
-        password:
-          type: string
-          example: "secret"
-          description: the user's password
-      allOf:
-        - $ref: "#/components/schemas/UserDTOOut"
-    UserDTOOut:
-      type: object
-      properties:
         username:
           type: string
           example: "bloggsy"
@@ -191,7 +182,32 @@ components:
           type: string
           example: joebloggs@bloggsy.com
           description: the user's email
-
+        password:
+          type: string
+          example: "secret"
+          description: the user's password
+    UserDTOOut:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+          example: "bloggsy"
+          description: the user's username
+        forename:
+          type: string
+          example: "Joe"
+          description: the user's forename
+        surname:
+          type: string
+          example: "Bloggs"
+          description: the user's surname(s)
+        email:
+          type: string
+          example: joebloggs@bloggsy.com
+          description: the user's email
     ErrorResponse:
       type: object
       properties:
