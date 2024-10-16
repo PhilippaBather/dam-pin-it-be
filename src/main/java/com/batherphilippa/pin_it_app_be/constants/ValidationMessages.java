@@ -1,7 +1,7 @@
 package com.batherphilippa.pin_it_app_be.constants;
 
 /**
- * ValidationMessages - contiene constantes de mensajes de validación de entrada.
+ * ValidationMessages - constants defining the validation messages for user input.
  */
 public class ValidationMessages {
     public static final String VALIDATION_COLLABORATOR_EMAIL = "An collaborator's email is required.";

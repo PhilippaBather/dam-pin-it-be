@@ -1,7 +1,7 @@
 package com.batherphilippa.pin_it_app_be.constants;
 
 /**
- * ValidationRegex - contiene constantes de Regex para validación.
+ * ValidationRegex - constants defining Regex for validation.
  */
 public class ValidationRegex {
 
