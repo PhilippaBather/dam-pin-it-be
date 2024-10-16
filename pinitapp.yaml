@@ -29,6 +29,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /users/registration:
     post:
       tags:
         - users
@@ -55,7 +56,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /users/{userId}:
+  /users/login/{userId}:
     get:
       tags:
         - users
@@ -89,6 +90,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /users/{userId}:
     put:
       tags:
         - users
