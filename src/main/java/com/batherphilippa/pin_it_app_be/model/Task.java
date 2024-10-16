@@ -50,4 +50,8 @@ public class Task {
     @JoinColumn(name = "project_id")
     private Project project;
 
+    @ManyToOne
+    @JsonBackReference(value = "collaborator_tasks")
+    private Collaborator collaborator;
+
 }
