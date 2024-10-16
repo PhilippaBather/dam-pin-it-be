@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import static com.batherphilippa.pin_it_app_be.constants.ValidationMessages.*;
 
 /**
- * Task - define una tarea de un proyecto.
+ * Task - defines a task belonging to a project.
  */
 @Data
 @NoArgsConstructor

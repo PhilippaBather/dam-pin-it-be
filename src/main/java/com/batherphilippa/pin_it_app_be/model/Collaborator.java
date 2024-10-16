@@ -14,7 +14,7 @@ import static com.batherphilippa.pin_it_app_be.constants.ValidationMessages.VALI
 import static com.batherphilippa.pin_it_app_be.constants.ValidationMessages.VALIDATION_COLLABORATOR_ROLE;
 
 /**
- * Collaborator - define un participante invitado para collaborar en un proyecto.
+ * Collaborator - defines a collaborator invited to participate on a project.
  */
 @Data
 @NoArgsConstructor

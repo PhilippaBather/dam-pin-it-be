@@ -15,7 +15,7 @@ import static com.batherphilippa.pin_it_app_be.constants.ValidationMessages.*;
 import static com.batherphilippa.pin_it_app_be.constants.ValidationRegex.VALIDATION_PASSWORD_REGEX;
 
 /**
- * User - define un usuario de la aplicación.
+ * User - defines a registered user of the application.
  */
 @Data
 @NoArgsConstructor

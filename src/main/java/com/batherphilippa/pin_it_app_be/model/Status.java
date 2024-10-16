@@ -1,7 +1,7 @@
 package com.batherphilippa.pin_it_app_be.model;
 
 /**
- * Status - define el estado de un proyecto.
+ * Status - defines the project status.
  */
 public enum Status {
 
