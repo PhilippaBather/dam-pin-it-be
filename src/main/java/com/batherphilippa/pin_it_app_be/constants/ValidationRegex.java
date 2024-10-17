@@ -5,5 +5,5 @@ package com.batherphilippa.pin_it_app_be.constants;
  */
 public class ValidationRegex {
 
-    public static final String VALIDATION_PASSWORD_REGEX = "^(?=.*[\\d])(?=.*[!@#$%^&*_])[\\w!@#$%^&*]{8,25}$";
+    public static final String VALIDATION_PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W)(?!=$_¿.* ).{8,25}$";
 }
