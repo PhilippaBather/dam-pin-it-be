@@ -8,6 +8,6 @@ import static com.batherphilippa.pin_it_app_be.constants.ErrorMessages.EXCEPTION
 public class UserNotFoundException extends RuntimeException {
 
     public UserNotFoundException(long userId) {
-        super(EXCEPTION_USER_NOT_FOUND);
+        super(EXCEPTION_USER_NOT_FOUND + userId);
     }
 }
