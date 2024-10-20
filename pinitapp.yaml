@@ -1,0 +1,213 @@
+openapi: 3.0.1
+info:
+  title: ¡Pin-it App!
+  description: An application to manage projects.
+  version: 1.0.0
+servers:
+  - url: 'https://api.example.com'
+tags:
+  - name: users
+    description: Operations to fetch, add, update, and delete application users.
+paths:
+  /users:
+    get:
+      tags:
+        - users
+      operationId: getAllUsers
+      summary: Returns a list of users.
+      description: Returns a list of all registered users of the application
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/UserDTOOut"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /users/registration:
+    post:
+      tags:
+        - users
+      operationId: saveNewUser
+      summary: Saves a user
+      description: Saves a newly registered user to the database
+      requestBody:
+        description: Un nuevo cliente
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDTOIn"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDTOOut"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /users/login/{userId}:
+    get:
+      tags:
+        - users
+      operationId: getUserById
+      summary: Fetches a user
+      description: Fetches a registered user by their ID
+      parameters:
+        - name: userId
+          in: path variable
+          description: the user's ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDTOOut"
+        '404':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /users/{userId}:
+    put:
+      tags:
+        - users
+      operationId: updateUserById
+      summary: Updates a user
+      description: Updates a registered user by their ID
+      parameters:
+        - name: userId
+          in: path variable
+          description: the user's ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: the updated user details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDTOIn"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDTOOut"
+        '404':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      tags:
+        - users
+      operationId: deleteUserById
+      summary: Deletes a user
+      description: Deletes a registered user by their ID
+      parameters:
+        - name: userId
+          in: path variable
+          description: the user's ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: the user was successfully deleted from the database
+        '404':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    UserDTOIn:
+      type: object
+      properties:
+        password:
+          type: string
+          example: "secret"
+          description: the user's password
+      allOf:
+        - $ref: "#/components/schemas/UserDTOOut"
+    UserDTOOut:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "bloggsy"
+          description: the user's username
+        forename:
+          type: string
+          example: "Joe"
+          description: the user's forename
+        surname:
+          type: string
+          example: "Bloggs"
+          description: the user's surname(s)
+        email:
+          type: string
+          example: joebloggs@bloggsy.com
+          description: the user's email
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: 404
+          description: the status code
+        errorType:
+          type: string
+          example: Client Not Found Error
+          description: identifies the error type
+        message:
+          type: string
+          example: "Client not found with id: 55"
+          description: a description of the error
+
+
+
+
