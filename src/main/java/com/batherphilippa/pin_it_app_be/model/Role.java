@@ -1,7 +1,7 @@
 package com.batherphilippa.pin_it_app_be.model;
 
 /**
- * Role - define el rol y, entonces, los permisos de un participante de un proyecto.
+ * Role - defines the permissions of project participants.
  */
 public enum Role {
 

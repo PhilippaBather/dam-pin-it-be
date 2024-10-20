@@ -8,11 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 import static com.batherphilippa.pin_it_app_be.constants.ValidationMessages.VALIDATION_COLLABORATOR_EMAIL;
 import static com.batherphilippa.pin_it_app_be.constants.ValidationMessages.VALIDATION_COLLABORATOR_ROLE;
 
 /**
- * Collaborator - define un participante invitado para collaborar en un proyecto.
+ * Collaborator - defines a collaborator invited to participate on a project.
  */
 @Data
 @NoArgsConstructor
@@ -44,4 +46,7 @@ public class Collaborator {
     @JsonBackReference(value = "user_collaborator")
     @JoinColumn(name = "user_email")
     private User user;
+
+    @OneToMany(mappedBy = "collaborator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Task> assignedTasks;
 }

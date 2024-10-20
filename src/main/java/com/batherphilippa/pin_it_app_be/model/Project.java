@@ -15,7 +15,7 @@ import java.util.Set;
 import static com.batherphilippa.pin_it_app_be.constants.ValidationMessages.*;
 
 /**
- * Project - define un proyecto.
+ * Project - defines a project.
  */
 @Data
 @NoArgsConstructor
