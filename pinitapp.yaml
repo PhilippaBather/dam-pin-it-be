@@ -28,7 +28,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/InternalServerError"
   /users/registration:
     post:
       tags:
@@ -50,12 +50,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserDTOOut"
+        '422':
+          description: Constraint Violation Exception
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConstraintViolationError"
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/InternalServerError"
   /users/login/{userId}:
     get:
       tags:
@@ -89,7 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/InternalServerError"
   /users/{userId}:
     put:
       tags:
@@ -125,12 +131,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        '422':
+          description: Constraint Violation Exception
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConstraintViolationError"
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/InternalServerError"
     delete:
       tags:
         - users
@@ -159,7 +171,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/InternalServerError"
 
 components:
   schemas:
@@ -192,6 +204,8 @@ components:
         id:
           type: integer
           format: int64
+          example: 1
+          description: the user's unique ID
         username:
           type: string
           example: "bloggsy"
@@ -208,6 +222,37 @@ components:
           type: string
           example: joebloggs@bloggsy.com
           description: the user's email
+    ConstraintViolationError:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "VALIDATION ERROR: UNPROCESSEABLE ENTITY",
+          description: description of the error
+        errorsList:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/ValidationErrorModel"
+    ValidationErrorModel:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          example: "2024-10-20T17:24:41.231+00:00"
+          description: the timestamp for the error
+        constraint:
+          type: string
+          example: "422"
+          description: the http status code
+        detail:
+          type: string
+          example: "Password must contain minimum 8 characters, including at least 1 digit and 1 special character; the maximum length is of 25 characters"
+          description: description of the error
+        mapping:
+          type: string
+          example: "password"
+          description: brief explanation of the cause fo the constraint error
     ErrorResponse:
       type: object
       properties:
@@ -217,12 +262,34 @@ components:
           description: the status code
         errorType:
           type: string
-          example: Client Not Found Error
+          example: User Not Found Error
           description: identifies the error type
         message:
           type: string
           example: "Client not found with id: 55"
           description: a description of the error
+    InternalServerError:
+      type: object
+      properties:
+        timestamp:
+          type: string,
+          example: "2024-10-20T16:23:49.004+00:00"
+          description: time error registered
+        status:
+          type: number
+          format: int32
+          example: 500
+          description: HTTP error code for an internal server error
+        path:
+          type: string
+          example: "/users/registration"
+          description: the path on which the internal server error occurred
+
+
+
+
+
+
 
 
 
