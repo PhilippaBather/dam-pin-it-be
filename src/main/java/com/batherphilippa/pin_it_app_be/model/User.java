@@ -49,7 +49,8 @@ public class User {
     @Column(name = "email")
     String email;
 
-    // contraseña debe incluir 1 número y un carácter especial con tamaño mínimo de 8 carácteres y máximo de 25
+    // password must include at least one character, one uppercase character, and one special character
+    // password must be between 8 to 25 characters inclusive
     @Pattern(regexp = VALIDATION_PASSWORD_REGEX, message = VALIDATION_PASSWORD_REGEX_CONSTRAINTS)
     @NotBlank(message = VALIDATION_PASSWORD_NOT_BLANK)
     @Column(name = "password")
