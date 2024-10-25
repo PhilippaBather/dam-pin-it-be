@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import static com.batherphilippa.pin_it_app_be.constants.ValidationMessages.*;
@@ -29,11 +30,6 @@ public class User {
     @Column(name = "user_id", updatable = false, nullable = false)
     private long id;
 
-    @NotBlank(message = VALIDATION_USERNAME_NOT_BLANK)
-    @Size(min = 2, max = 15, message = VALIDATION_USERNAME_SIZE)
-    @Column(name = "username")
-    private String username;
-
     @NotBlank(message = VALIDATION_FORENAME_NOT_BLANK)
     @Size(min = 2, max = 50, message = VALIDATION_FORENAME_SIZE)
     @Column(name = "first_name")
@@ -50,15 +46,38 @@ public class User {
     String email;
 
     // password must include at least one character, one uppercase character, and one special character
-    // password must be between 8 to 25 characters inclusive
+    // password must be between 8 and 25 characters inclusive
     @Pattern(regexp = VALIDATION_PASSWORD_REGEX, message = VALIDATION_PASSWORD_REGEX_CONSTRAINTS)
     @NotBlank(message = VALIDATION_PASSWORD_NOT_BLANK)
     @Column(name = "password")
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Project> ownedProjects;
+    private Set<Guest> guests;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Collaborator> collaborativeProjects;
+    private Set<ProjectUser> userProjects;
+
+    public void addProject(Project project, Role role) {
+        ProjectUser projectUser = new ProjectUser(this, project, role);
+        userProjects.add(projectUser);
+        project.getProjectUsers().add(projectUser);
+    }
+
+    public void removeProject(Project project) {
+        for (Iterator<ProjectUser> iterator = userProjects.iterator();
+             iterator.hasNext(); ) {
+            ProjectUser projectUser = iterator.next();
+
+            if (projectUser.getUser().equals(this) &&
+                    projectUser.getProject().equals(project)) {
+                iterator.remove();
+                projectUser.getProject().getProjectUsers().remove(projectUser);
+                projectUser.setUser(null);
+                projectUser.setProject(null);
+            }
+        }
+    }
+
+
 }

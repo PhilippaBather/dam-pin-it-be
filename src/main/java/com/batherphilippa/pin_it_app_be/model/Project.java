@@ -1,6 +1,5 @@
 package com.batherphilippa.pin_it_app_be.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -20,7 +19,7 @@ import static com.batherphilippa.pin_it_app_be.constants.ValidationMessages.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "projects")
 @Table(name = "projects")
 public class Project {
 
@@ -42,19 +41,22 @@ public class Project {
     @Column(name = "deadline")
     LocalDate deadline;
 
-    // "CURRENT" por defecto
+    @DateTimeFormat
+    @Column(name = "created_on")
+    LocalDate creationDate; // TODO: set at the BE
+
+    // "CURRENT" by default if no value is assigned
     @Column(name = "project_status")
-    private Status projectStatus;
+    private Status projectStatus; // TODO: ensure this at the BE
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Task> tasks;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Collaborator> collaborators;
+    private Set<Guest> guestSet;
 
-    @ManyToOne
-    @JsonBackReference(value = "user_owned_projects")
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<ProjectUser> projectUsers;
 
 }
