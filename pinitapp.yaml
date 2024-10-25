@@ -206,10 +206,6 @@ components:
           format: int64
           example: 1
           description: the user's unique ID
-        username:
-          type: string
-          example: "bloggsy"
-          description: the user's username
         forename:
           type: string
           example: "Joe"
@@ -222,6 +218,60 @@ components:
           type: string
           example: joebloggs@bloggsy.com
           description: the user's email
+        userProjects:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/Project"
+ #       guests:
+ #         type: array
+ #         items:
+ #           allOf:
+ #             - $ref: "#/components/schemas/Guest"
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: the project's unique ID
+        title:
+          type: string
+          example: "Project Title"
+          description: the project's title
+        description:
+          type: string
+          example: "Application testing for pinitapp"
+          description: the project's description (optional)
+        deadline:
+         type: string
+         example: "19-03-2024"
+         description: the project's deadline (optional)
+        creationDate:
+          type: string
+          example: "19-03-2024"
+          description: the project's creation date
+        projectStatus:
+          type: string
+          enum: ["CURRENT", "ARCHIVED"]
+          example: "CURRENT"
+          description: the project's status
+#        tasks:
+#          type: array
+#          items:
+#            allOf:
+#              - "#/components/schemas/Task"
+#        guests:
+#          type: array
+#          items:
+#            allOf:
+#              - "#/components/schemas/Guest"
+#        projectUsers:
+#          type: array
+#          items:
+#            allOf:
+#              - "#/components/schemas/ProjectUsers" #
     ConstraintViolationError:
       type: object
       properties:
