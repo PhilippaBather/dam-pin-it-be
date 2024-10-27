@@ -29,7 +29,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
-  /users/registration:
+  /users/auth/signup:
     post:
       tags:
         - users
@@ -50,12 +50,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserDTOOut"
-        '422':
-          description: Constraint Violation Exception
+        '409':
+          description: Conflict Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ConstraintViolationError"
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /users/auth/login:
+    get:
+      tags:
+        - users
+      operationId: getUserByEmailAndPassword
+      summary: Fetches a user
+      description: Fetches a registered user by their email and password on login.
+      requestBody:
+        description: A registered user's email and password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLoginDTOIn"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDTOOut"
+        '404':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         '500':
           description: Internal Server Error
           content:
@@ -175,6 +208,17 @@ paths:
 
 components:
   schemas:
+    UserLoginDTOIn:
+      type: object
+      properties:
+        email:
+          type: string
+          example: joebloggs@bloggsy.com
+          description: the user's email
+        password:
+          type: string
+          example: "secret"
+          description: the user's password
     UserDTOIn:
       type: object
       properties:
