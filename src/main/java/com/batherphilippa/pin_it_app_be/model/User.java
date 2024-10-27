@@ -58,8 +58,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProjectUser> userProjects;
 
-    public void addProject(Project project, Role role) {
-        ProjectUser projectUser = new ProjectUser(this, project, role);
+    public void addProject(Project project, Permissions permissions) {
+        ProjectUser projectUser = new ProjectUser(this, project, permissions);
         userProjects.add(projectUser);
         project.getProjectUsers().add(projectUser);
     }
@@ -78,6 +78,4 @@ public class User {
             }
         }
     }
-
-
 }

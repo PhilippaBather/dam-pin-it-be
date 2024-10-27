@@ -27,13 +27,13 @@ public class ProjectUser {
     private User user;
 
     // TODO: enum validation
-    @Column(name = "role")
-    private Role role;
+    @Column(name = "permissions")
+    private Permissions permissions;
 
-    public ProjectUser(User user, Project project, Role role) {
+    public ProjectUser(User user, Project project, Permissions permissions) {
         this.user = user;
         this.project = project;
         this.id = new ProjectUserId(user.getId(), project.getId());
-        this.role = role;
+        this.permissions = permissions;
     }
 }
