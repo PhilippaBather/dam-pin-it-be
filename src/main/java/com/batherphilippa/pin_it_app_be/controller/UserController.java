@@ -42,7 +42,7 @@ public class UserController {
 
     @PostMapping("/users/auth/login")
     public ResponseEntity<UserDTOOut> getUser(@RequestBody UserLoginDTOIn user) throws UserNotFoundException {
-        UserDTOOut userDTOOut = userService.findUserLogin(user);
+        UserDTOOut userDTOOut = userService.findUserOnLogin(user);
         logger.info("UserController: getUser on login");
         return new ResponseEntity<>(userDTOOut, HttpStatus.OK);
     }
