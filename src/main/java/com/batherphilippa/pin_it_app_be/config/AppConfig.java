@@ -99,7 +99,7 @@ public class AppConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorisedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/users/auth/signup").permitAll()
+                        auth
                                 .requestMatchers("/users/auth/login").permitAll()
                                 .anyRequest().authenticated()
                 );
@@ -118,7 +118,7 @@ public class AppConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         logger.info("AppConfig_webSecurityCustomizer");
         return (web) -> web.ignoring().requestMatchers(
-                "/users");
+                "/users", "/users/auth/signup");
     }
 
     @Bean
