@@ -3,6 +3,7 @@ package com.batherphilippa.pin_it_app_be.controller;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.UserLoginDTOIn;
+import com.batherphilippa.pin_it_app_be.exceptions.UnauthorisedException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserExistsException;
 import com.batherphilippa.pin_it_app_be.security.jwt.JwtResponse;
 import com.batherphilippa.pin_it_app_be.security.jwt.JwtUtils;
@@ -44,14 +45,10 @@ public class AuthController {
     private JwtUtils jwtUtils;
 
     @PostMapping("/users/auth/login")
-    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody UserLoginDTOIn user) {
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody UserLoginDTOIn user) throws UnauthorisedException {
         logger.info("start: AuthController_authenticateUser");
-        logger.info("USER: " + user);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-
-        logger.info("AUTHENTICATION: " + user);
-
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
@@ -69,7 +66,7 @@ public class AuthController {
 
 
     @PostMapping("/users/auth/signup")
-    public ResponseEntity<UserDTOOut> registerUser(@RequestBody UserDTOIn newUser) throws UserExistsException {
+    public ResponseEntity<UserDTOOut> registerUser(@Valid @RequestBody UserDTOIn newUser) throws UserExistsException {
         logger.info("start: AuthController_registerUser");
         authService.findDuplicateUserByEmail(newUser.getEmail());
         UserDTOOut userDTOOut = authService.save(newUser);
