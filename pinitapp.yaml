@@ -398,13 +398,13 @@ components:
           type: array
           items:
             allOf:
-              - $ref: "#/components/schemas/Project"
+              - $ref: "#/components/schemas/ProjectDTOOut"
  #       guests:
  #         type: array
  #         items:
  #           allOf:
  #             - $ref: "#/components/schemas/Guest"
-    Project:
+    ProjectDTOOut:
       type: object
       properties:
         id:
@@ -448,11 +448,34 @@ components:
 #          items:
 #            allOf:
 #              - "#/components/schemas/Guest"
-#        projectUsers:
-#          type: array
-#          items:
-#            allOf:
-#              - "#/components/schemas/ProjectUsers" #
+        projectUsers:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/ProjectUsersDTOOut"
+    ProjectUsersDTOOut:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: the id for the join table for Projects and Users
+        project:
+          type: object
+          items:
+            allOf:
+              - $ref: "#/components/schemas/ProjectDTOOut"
+        user:
+          type: object
+          items:
+            allOf:
+              - $ref: "#/components/schemas/UserDTOOut"
+        permissions:
+          type: string
+          enum: [OWNER, EDITOR, READ_ONLY]
+          example: "OWNER"
+          description: the user's permissions for a specified project
     ConstraintViolationError:
       type: object
       properties:
