@@ -48,11 +48,11 @@ public class UserService implements IUserService{
     public UserDTOOut updateById(long userId, UserDTOIn userDTOIn) throws UserNotFoundException {
         User user = userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         modelMapper.map(userDTOIn, user);
-        // set ID that was lost in mapping
+        // set ID lost in mapping
         user.setId(userId);
         // save to repo
         User updatedUser = userRepo.save(user);
-        // map to return the required output to controller
+        // map to return required output to controller
         UserDTOOut userDTOOut = new UserDTOOut();
         modelMapper.map(updatedUser, userDTOOut);
         logger.info("UserService: update user by ID");
@@ -63,15 +63,8 @@ public class UserService implements IUserService{
     public void deleteById(long userId) throws UserNotFoundException {
         User user = userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         userRepo.delete(user);
-        logger.info("UserService: user identified by ID; entity deleted");
         userRepo.deleteById(userId);
-    }
-
-    private UserDTOOut convertUserToDTOOut(User user) {
-        UserDTOOut userDTOOut = new UserDTOOut();
-        logger.info("UserService: convertUserToDTOUT");
-        modelMapper.map(user, userDTOOut);
-        return userDTOOut;
+        logger.info("UserService: user identified by ID; entity deleted");
     }
 
     private Set<UserDTOOut> convertUsersToDTOOutSet(Set<User> users) {

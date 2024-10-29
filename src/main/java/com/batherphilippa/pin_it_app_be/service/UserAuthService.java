@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * UserAuthService - class defines the authentication service methods.
+ */
 @Service
 public class UserAuthService implements UserDetailsService {
 
@@ -59,16 +62,13 @@ public class UserAuthService implements UserDetailsService {
 
     public UserDTOOut save(UserDTOIn userDTOIn) {
         User user = new User();
-
         // map to User entity used in the DB
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String password = userDTOIn.getPassword();
         modelMapper.map(userDTOIn, user);
         user.setPassword(passwordEncoder.encode(password));
-
         User newUser = userRepo.save(user);
         UserDTOOut userDTOOut = new UserDTOOut();
-
         // map to return the required output to controller
         modelMapper.map(newUser, userDTOOut);
         logger.info("UserService: user registration");
