@@ -73,6 +73,15 @@ public class GlobalExceptionHandler {
         return new Response(ErrorType.USER_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.USER_NOT_FOUND_EXCEPTION.getCode(), ErrorType.USER_NOT_FOUND_EXCEPTION.getHttpStatus(), unfe.getMessage());
     }
 
+    // 404 error
+    @ExceptionHandler(value = ProjectNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(ProjectNotFoundException pnfe){
+        logger.info("GlobalExceptionHandle: Custom exception: PROJECT_NOT_FOUND");
+        return new Response(ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getCode(), ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getHttpStatus(), pnfe.getMessage());
+    }
+
     // 409 error
     @ExceptionHandler(value = UserExistsException.class)
     @ResponseBody
