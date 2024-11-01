@@ -3,18 +3,22 @@ package com.batherphilippa.pin_it_app_be.service;
 import com.batherphilippa.pin_it_app_be.dto.*;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
-import com.batherphilippa.pin_it_app_be.model.Project;
-import com.batherphilippa.pin_it_app_be.model.Status;
-import com.batherphilippa.pin_it_app_be.model.User;
+import com.batherphilippa.pin_it_app_be.model.*;
 import com.batherphilippa.pin_it_app_be.repository.ProjectRepo;
+import com.batherphilippa.pin_it_app_be.repository.ProjectUserRepo;
 import com.batherphilippa.pin_it_app_be.repository.UserRepo;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.security.Permission;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * ProjectService - the implementation of the Project Service interface (IProjectService).
@@ -26,45 +30,73 @@ public class ProjectService implements IProjectService{
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final ProjectRepo projectRepo;
+    private final ProjectUserRepo projectUserRepo;
     private final UserRepo userRepo;
     private final ModelMapper modelMapper;
 
-    public ProjectService(ProjectRepo projectRepo, UserRepo userRepo, ModelMapper modelMapper) {
+    public ProjectService(ProjectRepo projectRepo, ProjectUserRepo projectUserRepo, UserRepo userRepo, ModelMapper modelMapper) {
         this.projectRepo = projectRepo;
+        this.projectUserRepo = projectUserRepo;
         this.userRepo = userRepo;
         this.modelMapper = modelMapper;
     }
 
 
     @Override
-    public Set<ProjectUserDTOOut> getAllUsersProjects(long userId) {
-        userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    public Set<ProjectUserDTOOut> getAllUsersProjects(long userId) throws UserNotFoundException {
         logger.info("ProjectService: getAllUsersProjects");
-        return projectRepo.findAllUsersProjects(userId);
+
+        userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        Set<ProjectUser> projects = projectUserRepo.findAllUsersProjects(userId);
+
+        if(projects.size() > 0) {
+            return convertToProjectUserDTOOutSet(projects);
+        }
+
+        return new HashSet<>();
     }
 
     @Override
-    public ProjectAndPermissionsDTOOut getProjectById(long projectId) throws ProjectNotFoundException{
-        Project project = projectRepo.findProjectById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
+    public ProjectAndPermissionsDTOOut getProjectById(long projectId, long userId) throws ProjectNotFoundException {
+        Project project = projectRepo.findByProjectId(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
+        ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(projectId, userId);
         ProjectAndPermissionsDTOOut projectOut = new ProjectAndPermissionsDTOOut();
-        modelMapper.map(project, projectOut);
-        logger.info("ProjectService: getProjectById");
+        if(project != null) {
+            modelMapper.map(project, projectOut);
+            projectOut.setPermissions(projectUser.getPermissions());
+        }
+        logger.info("ProjectService: getProjectById: " + projectOut);
         return projectOut;
     }
 
     @Override
-    public ProjectDTOOut saveProject(ProjectDTOIn projectDTOIn) {
+    public ProjectDTOOut saveProject(ProjectDTOIn projectDTOIn, User user) {
+        logger.info("ProjectService: saveProject");
+
+        // save project
         Project project = new Project();
         modelMapper.map(projectDTOIn, project);
         project = projectRepo.save(project);
+/*
+        // map saved project to ProjectDTOOut
         ProjectDTOOut projectDTOOut = new ProjectDTOOut();
-        modelMapper.map(projectDTOIn, project);
-        logger.info("ProjectService: saveProject");
-        return projectDTOOut;
+        modelMapper.map(project, projectDTOOut);
+
+        // add project to user projectsSet
+        user.getProjectsSet().add(project);
+        User u = userRepo.save(user);
+        logger.info("MOD USER: " + u);
+
+        // update permissions in Project User join table
+        ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(project.getId(), user.getId());
+        projectUser.setPermissions(Permissions.OWNER);
+        projectUserRepo.save(projectUser);*/
+
+        return saveProject(project, user);
     }
 
     @Override
-    public ProjectDTOOut updateProjectById(long projectId, ProjectDTOIn projectDTOIn) {
+    public ProjectDTOOut updateProjectById(long projectId, long userId, ProjectDTOIn projectDTOIn) {
         Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
         modelMapper.map(projectDTOIn, project);
         // set ID lost in mapping
@@ -76,19 +108,56 @@ public class ProjectService implements IProjectService{
             project.setProjectStatus(Status.CURRENT);
         }
         // save to repo
-        Project updatedProject = projectRepo.save(project);
+        //Project updatedProject = projectRepo.save(project);
         // map to return required output to controller
-        ProjectDTOOut projectDTOOut = new ProjectDTOOut();
-        modelMapper.map(updatedProject, projectDTOOut);
+        //ProjectDTOOut projectDTOOut = new ProjectDTOOut();
+        //modelMapper.map(updatedProject, projectDTOOut);
         logger.info("UserService: updateProjectById");
+        User user = userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        return saveProject(project, user);
+    }
+
+    private ProjectDTOOut saveProject(Project project, User user) {
+        // map saved project to ProjectDTOOut
+        ProjectDTOOut projectDTOOut = new ProjectDTOOut();
+        modelMapper.map(project, projectDTOOut);
+
+        // add project to user projectsSet
+        user.getProjectsSet().add(project);
+        User u = userRepo.save(user);
+        logger.info("MOD USER: " + u);
+
+        // update permissions in Project User join table
+        ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(project.getId(), user.getId());
+        projectUser.setPermissions(Permissions.OWNER);
+        projectUserRepo.save(projectUser);
         return projectDTOOut;
     }
 
     @Override
     public void deleteProjectById(long projectId) throws ProjectNotFoundException {
-        Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
+        /*Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
         projectRepo.delete(project);
-        logger.info("ProjectService: user identified by ID; entity deleted");
+        logger.info("ProjectService: user identified by ID; entity deleted");*/
+    }
+
+    private Set<ProjectUserDTOOut> convertToProjectUserDTOOutSet(Set<ProjectUser> projects) {
+        Set<ProjectUserDTOOut> projectUserDTOOutSet = new HashSet<>();
+        for(ProjectUser projectUser : projects) {
+            ProjectUserDTOOut projectUserDTOOut = new ProjectUserDTOOut();
+            projectUserDTOOut.setProjectId(projectUser.getProject().getId());
+            projectUserDTOOut.setUserId(projectUser.getUser().getId());
+            projectUserDTOOut.setPermissions(projectUser.getPermissions());
+            projectUserDTOOut.setTitle(projectUser.getProject().getTitle());
+            projectUserDTOOutSet.add(projectUserDTOOut);
+        }
+        return projectUserDTOOutSet;
+    }
+
+    private ProjectDTOOut convertToProjectDTOOut(ProjectUser projectUser) {
+        ProjectDTOOut projectDTOOut = new ProjectDTOOut();
+        modelMapper.map(projectUser, projectDTOOut);
+        return null;
     }
 
     private UserDTOOut convertUserToDTOOut(User user) {

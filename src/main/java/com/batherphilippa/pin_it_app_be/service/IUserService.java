@@ -2,6 +2,7 @@ package com.batherphilippa.pin_it_app_be.service;
 
 import com.batherphilippa.pin_it_app_be.dto.UserDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
+import com.batherphilippa.pin_it_app_be.model.User;
 
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 public interface IUserService {
 
     Set<UserDTOOut> findAll();
-    UserDTOOut findById(long userId);
+    User findById(long userId);
     UserDTOOut updateById(long userId, UserDTOIn userDTOIn);
     void deleteById(long userId);
 }

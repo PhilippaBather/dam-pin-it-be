@@ -6,6 +6,7 @@ import com.batherphilippa.pin_it_app_be.dto.ProjectDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.ProjectUserDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
+import com.batherphilippa.pin_it_app_be.model.User;
 
 import java.util.Set;
 
@@ -15,8 +16,8 @@ import java.util.Set;
 public interface IProjectService {
 
     Set<ProjectUserDTOOut> getAllUsersProjects(long userId) throws UserNotFoundException;
-    ProjectAndPermissionsDTOOut getProjectById(long projectId) throws ProjectNotFoundException;
-    ProjectDTOOut saveProject(ProjectDTOIn projectDTOIn);
-    ProjectDTOOut updateProjectById(long projectId, ProjectDTOIn project) throws ProjectNotFoundException;
+    ProjectAndPermissionsDTOOut getProjectById(long projectId, long userId) throws ProjectNotFoundException;
+    ProjectDTOOut saveProject(ProjectDTOIn projectDTOIn, User user);
+    ProjectDTOOut updateProjectById(long projectId, long userId, ProjectDTOIn project) throws ProjectNotFoundException;
     void deleteProjectById(long projectId) throws ProjectNotFoundException;
 }

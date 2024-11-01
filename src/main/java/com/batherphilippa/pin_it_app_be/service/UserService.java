@@ -35,13 +35,10 @@ public class UserService implements IUserService{
         return convertUsersToDTOOutSet(users);
     }
     @Override
-    public UserDTOOut findById(long userId) throws UserNotFoundException {
+    public User findById(long userId) throws UserNotFoundException {
         User user = userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        UserDTOOut userDTOOut = new UserDTOOut();
-        // map to return the required output to controller
-        modelMapper.map(user, userDTOOut);
         logger.info("UserService: user found by ID");
-        return userDTOOut;
+        return user;
     }
 
     @Override
@@ -63,7 +60,7 @@ public class UserService implements IUserService{
     public void deleteById(long userId) throws UserNotFoundException {
         User user = userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         userRepo.delete(user);
-        userRepo.deleteById(userId);
+        //userRepo.deleteById(userId);
         logger.info("UserService: user identified by ID; entity deleted");
     }
 
