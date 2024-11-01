@@ -18,11 +18,11 @@ import java.util.Objects;
 @Embeddable
 public class ProjectUserId implements Serializable {
 
-    @Column(name = "project_id")
-    private long projectId;
+    @Column(name = "p_id")
+    private long pId;
 
-    @Column(name = "user_id")
-    private long userId;
+    @Column(name = "u_id")
+    private long uId;
 
     // Embedded type overrides equals and hash code
 
@@ -34,12 +34,12 @@ public class ProjectUserId implements Serializable {
             return false;
 
         ProjectUserId that = (ProjectUserId) o;
-        return Objects.equals(projectId, that.projectId) &&
-                Objects.equals(userId, that.userId);
+        return Objects.equals(pId, that.pId) &&
+                Objects.equals(uId, that.uId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(projectId, userId);
+        return Objects.hash(pId, uId);
     }
 }
