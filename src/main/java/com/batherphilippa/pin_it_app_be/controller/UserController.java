@@ -3,8 +3,10 @@ package com.batherphilippa.pin_it_app_be.controller;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
+import com.batherphilippa.pin_it_app_be.model.User;
 import com.batherphilippa.pin_it_app_be.service.UserService;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,10 +25,13 @@ import java.util.Set;
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final ModelMapper modelMapper;
+
 
     private final UserService userService;
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ModelMapper modelMapper) {
         this.userService = userService;
+        this.modelMapper = modelMapper;
     }
     @GetMapping("/users")
     public ResponseEntity<Set<UserDTOOut>> getAllUsers() {
@@ -37,7 +42,10 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<UserDTOOut> getUserById(@PathVariable long userId) throws UserNotFoundException {
-        UserDTOOut userDTOOut = userService.findById(userId);
+        User user = userService.findById(userId);
+        UserDTOOut userDTOOut = new UserDTOOut();
+        // map to return the required output to controller
+        modelMapper.map(user, userDTOOut);
         logger.info("UserController: getUserById");
         return new ResponseEntity<>(userDTOOut, HttpStatus.OK);
     }

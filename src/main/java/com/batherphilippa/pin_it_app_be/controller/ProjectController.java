@@ -6,7 +6,9 @@ import com.batherphilippa.pin_it_app_be.dto.ProjectDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.ProjectUserDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
+import com.batherphilippa.pin_it_app_be.model.User;
 import com.batherphilippa.pin_it_app_be.service.ProjectService;
+import com.batherphilippa.pin_it_app_be.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,40 +25,44 @@ public class ProjectController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);
     private final ProjectService projectService;
+    private final UserService userService;
 
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, UserService userService) {
         this.projectService = projectService;
+        this.userService = userService;
     }
 
-    @GetMapping("/projects")
+    @GetMapping("/projects/{userId}")
     public ResponseEntity<Set<ProjectUserDTOOut>> getAllUsersProjects(@PathVariable long userId) throws UserNotFoundException {
-        Set<ProjectUserDTOOut> projects =  projectService.getAllUsersProjects(userId);
+        Set<ProjectUserDTOOut> projectUsers = projectService.getAllUsersProjects(userId);
         logger.info("ProjectController: getAllUsersProjects");
-        return new ResponseEntity<>(projects, HttpStatus.OK);
+        return new ResponseEntity<>(projectUsers, HttpStatus.OK);
     }
 
-    @GetMapping("/project/{projectId}")
-    public ResponseEntity<ProjectAndPermissionsDTOOut> getProjectById(@PathVariable long projectId) throws ProjectNotFoundException {
-        ProjectAndPermissionsDTOOut project = projectService.getProjectById(projectId);
+    @GetMapping("/project/user/{userId}/project/{projectId}")
+    public ResponseEntity<ProjectAndPermissionsDTOOut> getProjectById(@PathVariable long projectId, @PathVariable long userId) throws ProjectNotFoundException {
+        ProjectAndPermissionsDTOOut project = projectService.getProjectById(projectId, userId);
         logger.info("ProjectController: getProjectById");
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
-    @PostMapping("/projects")
-    public ResponseEntity<ProjectDTOOut> saveProject(@Valid @RequestBody ProjectDTOIn projectDTOIn) {
-        ProjectDTOOut projectDTOOut = projectService.saveProject(projectDTOIn);
+    @PostMapping("/projects/{userId}")
+    public ResponseEntity<ProjectDTOOut> saveProject(@PathVariable long userId, @Valid @RequestBody ProjectDTOIn projectDTOIn) {
+        User user = userService.findById(userId);
+        logger.info("DTO in: " + projectDTOIn);
+        ProjectDTOOut projectDTOOut = projectService.saveProject(projectDTOIn, user);
         logger.info("ProjectController: saveProject");
         return new ResponseEntity<>(projectDTOOut, HttpStatus.CREATED);
     }
 
-    @PutMapping("/project/{projectId}")
-    public ResponseEntity<ProjectDTOOut> updateProjectById(@PathVariable long projectId, @Valid @RequestBody ProjectDTOIn projectDTOIn) throws ProjectNotFoundException {
-        ProjectDTOOut projectDTOOut = projectService.updateProjectById(projectId, projectDTOIn);
+    @PutMapping("/project/user/{userId}/project/{projectId}")
+    public ResponseEntity<ProjectDTOOut> updateProjectById(@PathVariable long projectId, @PathVariable long userId, @Valid @RequestBody ProjectDTOIn projectDTOIn) throws ProjectNotFoundException {
+        ProjectDTOOut projectDTOOut = projectService.updateProjectById(projectId, userId, projectDTOIn);
         logger.info("ProjectController: updateProjectById");
         return new ResponseEntity<>(projectDTOOut, HttpStatus.OK);
     }
 
-    @DeleteMapping("/project/{projectId")
+    @DeleteMapping("/project/{projectId}")
     public ResponseEntity<Void> deleteProjectById(@PathVariable long projectId) throws ProjectNotFoundException {
         logger.info("ProjectController: deleteProjectById");
         projectService.deleteProjectById(projectId);
