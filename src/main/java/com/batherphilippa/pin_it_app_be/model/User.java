@@ -1,5 +1,6 @@
 package com.batherphilippa.pin_it_app_be.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.Set;
 
 import static com.batherphilippa.pin_it_app_be.constants.ValidationMessages.*;
@@ -48,29 +49,17 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Guest> guests;
+    private Set<Guest> guests = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "project_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
+    private Set<Project> projectsSet = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ProjectUser> userProjects;
+    private Set<ProjectUser> userProjectsPermissions = new HashSet<>();
 
-    public void addProject(Project project, Permissions permissions) {
-        ProjectUser projectUser = new ProjectUser(this, project, permissions);
-        userProjects.add(projectUser);
-        project.getProjectUsers().add(projectUser);
-    }
-
-    public void removeProject(Project project) {
-        for (Iterator<ProjectUser> iterator = userProjects.iterator();
-             iterator.hasNext(); ) {
-            ProjectUser projectUser = iterator.next();
-
-            if (projectUser.getUser().equals(this) &&
-                    projectUser.getProject().equals(project)) {
-                iterator.remove();
-                projectUser.getProject().getProjectUsers().remove(projectUser);
-                projectUser.setUser(null);
-                projectUser.setProject(null);
-            }
-        }
-    }
 }

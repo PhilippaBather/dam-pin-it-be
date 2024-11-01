@@ -6,34 +6,36 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * ProjectUser - class maps the join table ProjectUserId.
+ * ProjectUser - class maps the join table ProjectUserKey.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "ProjectUser")
+@Entity(name = "project_user")
+@Table(name = "project_user")
 public class ProjectUser {
 
     @EmbeddedId
-    private ProjectUserId id;
+    private ProjectUserKey id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_user_id", referencedColumnName = "project_id")
+    @MapsId("projectId")
+    @JoinColumn(name = "project_id")
     private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_project_id", referencedColumnName = "user_id")
+    @MapsId("userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     // TODO: enum validation
     @Column(name = "permissions")
     private Permissions permissions;
 
-    public ProjectUser(User user, Project project, Permissions permissions) {
-        this.user = user;
+
+    public ProjectUser(Project project, User user, Permissions permissions) {
         this.project = project;
-        this.id = new ProjectUserId(user.getId(), project.getId());
+        this.user = user;
         this.permissions = permissions;
     }
 }
