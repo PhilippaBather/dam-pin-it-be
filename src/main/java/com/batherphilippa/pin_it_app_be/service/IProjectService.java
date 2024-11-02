@@ -17,7 +17,7 @@ public interface IProjectService {
 
     Set<ProjectUserDTOOut> getAllUsersProjects(long userId) throws UserNotFoundException;
     ProjectAndPermissionsDTOOut getProjectById(long projectId, long userId) throws ProjectNotFoundException;
-    ProjectDTOOut saveProject(ProjectDTOIn projectDTOIn, User user);
-    ProjectDTOOut updateProjectById(long projectId, long userId, ProjectDTOIn project) throws ProjectNotFoundException;
+    ProjectDTOOut saveProject(ProjectDTOIn projectDTOIn, User user) throws UserNotFoundException;
+    ProjectDTOOut updateProjectById(long projectId, ProjectDTOIn project) throws ProjectNotFoundException;
     void deleteProjectById(long projectId) throws ProjectNotFoundException;
 }

@@ -12,21 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.security.Permission;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * ProjectService - the implementation of the Project Service interface (IProjectService).
  */
 
 @Service
-public class ProjectService implements IProjectService{
-
+public class ProjectService implements IProjectService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final ProjectRepo projectRepo;
@@ -77,26 +72,27 @@ public class ProjectService implements IProjectService{
         Project project = new Project();
         modelMapper.map(projectDTOIn, project);
         project = projectRepo.save(project);
-/*
+
         // map saved project to ProjectDTOOut
         ProjectDTOOut projectDTOOut = new ProjectDTOOut();
         modelMapper.map(project, projectDTOOut);
 
         // add project to user projectsSet
         user.getProjectsSet().add(project);
-        User u = userRepo.save(user);
-        logger.info("MOD USER: " + u);
+        userRepo.save(user);
 
         // update permissions in Project User join table
         ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(project.getId(), user.getId());
         projectUser.setPermissions(Permissions.OWNER);
-        projectUserRepo.save(projectUser);*/
+        projectUserRepo.save(projectUser);
 
-        return saveProject(project, user);
+        return projectDTOOut;
     }
 
     @Override
-    public ProjectDTOOut updateProjectById(long projectId, long userId, ProjectDTOIn projectDTOIn) {
+    public ProjectDTOOut updateProjectById(long projectId, ProjectDTOIn projectDTOIn) throws ProjectNotFoundException {
+        logger.info("UserService: updateProjectById");
+
         Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
         modelMapper.map(projectDTOIn, project);
         // set ID lost in mapping
@@ -107,33 +103,15 @@ public class ProjectService implements IProjectService{
         if(project.getProjectStatus() == null) {
             project.setProjectStatus(Status.CURRENT);
         }
-        // save to repo
-        //Project updatedProject = projectRepo.save(project);
-        // map to return required output to controller
-        //ProjectDTOOut projectDTOOut = new ProjectDTOOut();
-        //modelMapper.map(updatedProject, projectDTOOut);
-        logger.info("UserService: updateProjectById");
-        User user = userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        return saveProject(project, user);
-    }
 
-    private ProjectDTOOut saveProject(Project project, User user) {
+        // save to repo
+        projectRepo.save(project);
+
         // map saved project to ProjectDTOOut
         ProjectDTOOut projectDTOOut = new ProjectDTOOut();
         modelMapper.map(project, projectDTOOut);
-
-        // add project to user projectsSet
-        user.getProjectsSet().add(project);
-        User u = userRepo.save(user);
-        logger.info("MOD USER: " + u);
-
-        // update permissions in Project User join table
-        ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(project.getId(), user.getId());
-        projectUser.setPermissions(Permissions.OWNER);
-        projectUserRepo.save(projectUser);
         return projectDTOOut;
     }
-
     @Override
     public void deleteProjectById(long projectId) throws ProjectNotFoundException {
         /*Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
