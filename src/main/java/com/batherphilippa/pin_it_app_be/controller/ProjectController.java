@@ -55,9 +55,9 @@ public class ProjectController {
         return new ResponseEntity<>(projectDTOOut, HttpStatus.CREATED);
     }
 
-    @PutMapping("/project/user/{userId}/project/{projectId}")
-    public ResponseEntity<ProjectDTOOut> updateProjectById(@PathVariable long projectId, @PathVariable long userId, @Valid @RequestBody ProjectDTOIn projectDTOIn) throws ProjectNotFoundException {
-        ProjectDTOOut projectDTOOut = projectService.updateProjectById(projectId, userId, projectDTOIn);
+    @PutMapping("/project/{projectId}")
+    public ResponseEntity<ProjectDTOOut> updateProjectById(@PathVariable long projectId, @Valid @RequestBody ProjectDTOIn projectDTOIn) throws ProjectNotFoundException {
+        ProjectDTOOut projectDTOOut = projectService.updateProjectById(projectId, projectDTOIn);
         logger.info("ProjectController: updateProjectById");
         return new ResponseEntity<>(projectDTOOut, HttpStatus.OK);
     }
