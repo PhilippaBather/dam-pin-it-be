@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -73,6 +75,15 @@ public class GlobalExceptionHandler {
         return new Response(ErrorType.USER_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.USER_NOT_FOUND_EXCEPTION.getCode(), ErrorType.USER_NOT_FOUND_EXCEPTION.getHttpStatus(), unfe.getMessage());
     }
 
+    // 404 error
+    @ExceptionHandler(value = ProjectNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(ProjectNotFoundException pnfe){
+        logger.info("GlobalExceptionHandle: Custom exception: PROJECT_NOT_FOUND");
+        return new Response(ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getCode(), ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getHttpStatus(), pnfe.getMessage());
+    }
+
     // 409 error
     @ExceptionHandler(value = UserExistsException.class)
     @ResponseBody
@@ -81,6 +92,10 @@ public class GlobalExceptionHandler {
         logger.info("GlobalExceptionHandle: Custom exception: USER_NOT_FOUND");
         return new Response(ErrorType.USER_EXISTS_EXCEPTION.getTimestamp(), ErrorType.USER_EXISTS_EXCEPTION.getCode(), ErrorType.USER_EXISTS_EXCEPTION.getHttpStatus(), uee.getMessage());
     }
-
+    @ResponseBody
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public String handleHttpMediaTypeNotAcceptableException() {
+        return "acceptable MIME type:" + MediaType.APPLICATION_JSON_VALUE;
+    }
 
 }

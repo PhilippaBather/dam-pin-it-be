@@ -10,13 +10,13 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * ProjectUserId - the join table for the entity ProjectUser.  Note: the @Embedded type requires Serializable.
+ * ProjectUserKey - the join table for the entity ProjectUser.  Note: the @Embedded type requires Serializable.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class ProjectUserId implements Serializable {
+public class ProjectUserKey implements Serializable {
 
     @Column(name = "project_id")
     private long projectId;
@@ -33,7 +33,7 @@ public class ProjectUserId implements Serializable {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        ProjectUserId that = (ProjectUserId) o;
+        ProjectUserKey that = (ProjectUserKey) o;
         return Objects.equals(projectId, that.projectId) &&
                 Objects.equals(userId, that.userId);
     }

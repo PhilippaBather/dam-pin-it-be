@@ -100,7 +100,7 @@ public class AppConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/users/auth/login").permitAll()
+                                .requestMatchers("/no-csrf","/users/auth/login").permitAll()
                                 .anyRequest().authenticated()
                 );
 
@@ -109,6 +109,8 @@ public class AppConfig {
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
         http.addFilterBefore((Filter) authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        http.csrf(AbstractHttpConfigurer::disable);
 
         logger.info("end: AppConfig_filterChain");
         return http.build();

@@ -8,6 +8,8 @@ servers:
 tags:
   - name: users
     description: Operations to fetch, add, update, and delete application users.
+  - name: projects
+    description: Operations to fetch, add, update, and delete a user's projects.
 paths:
   /users:
     get:
@@ -205,7 +207,137 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
-
+  /projects/{id}:
+    get:
+      tags:
+        - projects
+      operationId: getProjectsById
+      summary: Returns a user's projects by their ID
+      description: Returns a user's projects by their ID
+      parameters:
+        - name: userId
+          in: path variable
+          description: the user's ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /project/{id}:
+    get:
+      tags:
+        - projects
+      operationId: getProjectById
+      summary: Returns a user's projects by their ID
+      description: Returns a user's projects by their ID
+      parameters:
+        - name: projectId
+          in: path variable
+          description: the project's ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+    put:
+      tags:
+        - projects
+      operationId: updateProjectById
+      summary: Updates a user's project by project ID
+      description: Updates a user's project by project ID
+      parameters:
+        - name: projectId
+          in: path variable
+          description: the project's ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: the updated prohect details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectDTOIn"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        '404':
+          description: Project Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '422':
+          description: Constraint Violation Exception
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConstraintViolationError"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+    delete:
+      tags:
+        - projects
+      operationId: deleteProjectById
+      summary: Delete's a user's project by ID
+      description: Delete's a user's project by project ID
+      parameters:
+        - name: projectId
+          in: path variable
+          description: the project's ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: the user was successfully deleted from the database
+        '404':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
 components:
   schemas:
     UserLoginDTOIn:
@@ -266,13 +398,13 @@ components:
           type: array
           items:
             allOf:
-              - $ref: "#/components/schemas/Project"
+              - $ref: "#/components/schemas/ProjectDTOOut"
  #       guests:
  #         type: array
  #         items:
  #           allOf:
  #             - $ref: "#/components/schemas/Guest"
-    Project:
+    ProjectDTOOut:
       type: object
       properties:
         id:
@@ -280,6 +412,11 @@ components:
           format: int64
           example: 1
           description: the project's unique ID
+      allOf:
+        - $ref: "#/components/schemas/ProjectDTOIn"
+    ProjectDTOIn:
+      type: object
+      properties:
         title:
           type: string
           example: "Project Title"
@@ -311,11 +448,34 @@ components:
 #          items:
 #            allOf:
 #              - "#/components/schemas/Guest"
-#        projectUsers:
-#          type: array
-#          items:
-#            allOf:
-#              - "#/components/schemas/ProjectUsers" #
+        projectUsers:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/ProjectUsersDTOOut"
+    ProjectUsersDTOOut:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: the id for the join table for Projects and Users
+        project:
+          type: object
+          items:
+            allOf:
+              - $ref: "#/components/schemas/ProjectDTOOut"
+        user:
+          type: object
+          items:
+            allOf:
+              - $ref: "#/components/schemas/UserDTOOut"
+        permissions:
+          type: string
+          enum: [OWNER, EDITOR, READ_ONLY]
+          example: "OWNER"
+          description: the user's permissions for a specified project
     ConstraintViolationError:
       type: object
       properties:

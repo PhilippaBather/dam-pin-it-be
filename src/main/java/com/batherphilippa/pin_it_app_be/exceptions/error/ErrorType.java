@@ -7,7 +7,8 @@ import java.sql.Timestamp;
  */
 public enum ErrorType {
 
-    UNAUTHORISED_EXCEPTION("404", "UNAUTHORISED EXCEMPTION", new Timestamp(System.currentTimeMillis())),
+    PROJECT_NOT_FOUND_EXCEPTION("404", "PROJECT NOT FOUND", new Timestamp(System.currentTimeMillis())),
+    UNAUTHORISED_EXCEPTION("404", "UNAUTHORISED EXCEPTION", new Timestamp(System.currentTimeMillis())),
     USER_EXISTS_EXCEPTION("409", "USER EXISTS", new Timestamp(System.currentTimeMillis())),
     USER_NOT_FOUND_EXCEPTION("404", "USER NOT FOUND", new Timestamp(System.currentTimeMillis())),
     VALIDATION_UNPROCESSABLE_ENTITY_EXCEPTION("422", "VALIDATION ERROR: UNPROCESSEABLE ENTITY", new Timestamp(System.currentTimeMillis()));
