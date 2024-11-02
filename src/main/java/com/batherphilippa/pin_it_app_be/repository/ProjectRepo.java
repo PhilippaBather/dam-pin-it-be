@@ -1,9 +1,12 @@
 package com.batherphilippa.pin_it_app_be.repository;
 
+import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.Project;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -19,4 +22,16 @@ public interface ProjectRepo extends CrudRepository<Project, Long> {
             " INNER JOIN project_user pu ON pu.project_id = p.project_id" +
             " WHERE pu.project_id = :projectId;", nativeQuery = true)
     Optional<Project> findByProjectId(long projectId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM projects p " +
+                    " WHERE p.project_id = :projectId;", nativeQuery = true)
+    void deleteAllByProjectId(long projectId);
+
+    @Transactional
+    @Modifying
+    @Query(value = " DELETE FROM projects p " +
+            " WHERE p.project_id = :projectId;", nativeQuery = true)
+    void deleteAllUserOwnedProjects(long projectId) throws UserNotFoundException;
 }
