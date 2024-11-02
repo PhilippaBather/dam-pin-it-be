@@ -38,9 +38,9 @@ public class UserAuthService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        logger.info("start: ProprietorUserDetailsService_loadUserByUsername");
+        logger.info("start: UserAuthService");
         User user = findUserByEmail(email);
-        logger.info("end: ProprietorUserDetailsService_loadUserByUsername");
+        logger.info("end: UserAuthService");
         return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
                 .password(user.getPassword())
                 .authorities("ROLE_USER")

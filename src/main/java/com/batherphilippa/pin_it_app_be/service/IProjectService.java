@@ -20,4 +20,5 @@ public interface IProjectService {
     ProjectDTOOut saveProject(ProjectDTOIn projectDTOIn, User user) throws UserNotFoundException;
     ProjectDTOOut updateProjectById(long projectId, ProjectDTOIn project) throws ProjectNotFoundException;
     void deleteProjectById(long projectId) throws ProjectNotFoundException;
+    void deleteUserProjectsOnDeleteUser(User user);
 }

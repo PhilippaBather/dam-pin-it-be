@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * ProjectService - the implementation of the Project Service interface (IProjectService).
@@ -114,9 +115,21 @@ public class ProjectService implements IProjectService {
     }
     @Override
     public void deleteProjectById(long projectId) throws ProjectNotFoundException {
-        /*Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
-        projectRepo.delete(project);
-        logger.info("ProjectService: user identified by ID; entity deleted");*/
+        Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
+        projectUserRepo.deleteAllByProjectId(project.getId());
+        projectRepo.deleteAllByProjectId(project.getId());
+        logger.info("ProjectService: user identified by ID; entity deleted");
+    }
+
+    @Override
+    public void deleteUserProjectsOnDeleteUser(User user) {
+        Set<ProjectUser> usersOwnedProjects = projectUserRepo.findAllUsersProjects(user.getId());
+        Set<Project> projects = usersOwnedProjects.stream().map(ProjectUser::getProject).collect(Collectors.toSet());
+        projectUserRepo.deleteAllByUserId(user.getId());
+
+        for(Project project : projects) {
+            projectRepo.deleteAllUserOwnedProjects(project.getId());
+        }
     }
 
     private Set<ProjectUserDTOOut> convertToProjectUserDTOOutSet(Set<ProjectUser> projects) {
@@ -130,18 +143,5 @@ public class ProjectService implements IProjectService {
             projectUserDTOOutSet.add(projectUserDTOOut);
         }
         return projectUserDTOOutSet;
-    }
-
-    private ProjectDTOOut convertToProjectDTOOut(ProjectUser projectUser) {
-        ProjectDTOOut projectDTOOut = new ProjectDTOOut();
-        modelMapper.map(projectUser, projectDTOOut);
-        return null;
-    }
-
-    private UserDTOOut convertUserToDTOOut(User user) {
-        UserDTOOut userDTOOut = new UserDTOOut();
-        logger.info("UserService: convertUserToDTOUT");
-        modelMapper.map(user, userDTOOut);
-        return userDTOOut;
     }
 }
