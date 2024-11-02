@@ -5,7 +5,7 @@ package com.batherphilippa.pin_it_app_be.model;
  */
 public enum Role {
 
-    OWNER,
-    EDITOR,
-    VIEWER
+    OWNER,  // create, read, write, delete
+    EDITOR, // read, write
+    VIEWER // write
 }

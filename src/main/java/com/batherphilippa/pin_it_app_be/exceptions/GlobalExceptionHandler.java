@@ -64,4 +64,14 @@ public class GlobalExceptionHandler {
         return new Response(ErrorType.USER_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.USER_NOT_FOUND_EXCEPTION.getCode(), ErrorType.USER_NOT_FOUND_EXCEPTION.getHttpStatus(), unfe.getMessage());
     }
 
+    // 409 error
+    @ExceptionHandler(value = UserExistsException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Response handleException(UserExistsException uee){
+        logger.info("GlobalExceptionHandle: Custom exception: USER_NOT_FOUND");
+        return new Response(ErrorType.USER_EXISTS_EXCEPTION.getTimestamp(), ErrorType.USER_EXISTS_EXCEPTION.getCode(), ErrorType.USER_EXISTS_EXCEPTION.getHttpStatus(), uee.getMessage());
+    }
+
+
 }

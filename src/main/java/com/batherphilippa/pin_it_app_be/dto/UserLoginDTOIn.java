@@ -5,16 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * UserDTOIn - defines the data transfer object for an incoming user object.
+ * UserLoginDTOIn - defines the data transfer object for an incoming login request.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTOIn {
+public class UserLoginDTOIn {
 
-    private String forename;
-    private String surname;
     private String email;
     private String password;
-
 }

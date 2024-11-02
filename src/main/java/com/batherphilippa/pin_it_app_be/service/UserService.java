@@ -2,6 +2,8 @@ package com.batherphilippa.pin_it_app_be.service;
 
 import com.batherphilippa.pin_it_app_be.dto.UserDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
+import com.batherphilippa.pin_it_app_be.dto.UserLoginDTOIn;
+import com.batherphilippa.pin_it_app_be.exceptions.UserExistsException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.User;
 import com.batherphilippa.pin_it_app_be.repository.UserRepo;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -44,8 +47,23 @@ public class UserService implements IUserService{
         UserDTOOut userDTOOut = new UserDTOOut();
         // map to return the required output to controller
         modelMapper.map(newUser, userDTOOut);
-        logger.info("UserService: user registered and saved to database");
+        logger.info("UserService: user registration");
         return userDTOOut;
+    }
+
+    @Override
+    public UserDTOOut findUserOnLogin(UserLoginDTOIn userLogin) {
+        User user = userRepo.findByEmailAndPasswordNativeSQL(userLogin.getEmail(), userLogin.getPassword()).orElseThrow(() -> new UserNotFoundException(userLogin.getEmail()));
+        logger.info("UserService: user login");
+        return convertUserToDTOOut(user);
+    }
+
+    @Override
+    public boolean findByEmail(String email) throws UserExistsException {
+        if(userRepo.findByEmail(email).isPresent()) {
+            throw new UserExistsException(email);
+        }
+        return false;
     }
 
     @Override
@@ -81,6 +99,13 @@ public class UserService implements IUserService{
         userRepo.deleteById(userId);
     }
 
+    private UserDTOOut convertUserToDTOOut(User user) {
+        UserDTOOut userDTOOut = new UserDTOOut();
+        logger.info("UserService: convertUserToDTOUT");
+        modelMapper.map(user, userDTOOut);
+        return userDTOOut;
+    }
+
     private Set<UserDTOOut> convertUsersToDTOOutSet(Set<User> users) {
         Set<UserDTOOut> usersDTOOutSet = new HashSet<>();
 
@@ -89,7 +114,7 @@ public class UserService implements IUserService{
             modelMapper.map(user, userDTOOut);
             usersDTOOutSet.add(userDTOOut);
         }
-        logger.info("UserService: convertUsersToDTOUSet");
+        logger.info("UserService: convertUsersToDTOUTSet");
         return usersDTOOutSet;
     }
 }

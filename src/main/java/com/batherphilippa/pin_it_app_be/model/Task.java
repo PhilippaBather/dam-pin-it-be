@@ -41,7 +41,8 @@ public class Task {
     @Column(name = "task_deadline")
     private LocalDate deadline;
 
-    // none por defecto si un nivel no está asignado
+    // TODO: enum validation
+    // "NONE" by default if no value is assigned
     @Column(name = "priority_level")
     private Priority priorityLevel;
 
@@ -49,9 +50,4 @@ public class Task {
     @JsonBackReference(value = "projects_tasks")
     @JoinColumn(name = "project_id")
     private Project project;
-
-    @ManyToOne
-    @JsonBackReference(value = "collaborator_tasks")
-    private Collaborator collaborator;
-
 }
