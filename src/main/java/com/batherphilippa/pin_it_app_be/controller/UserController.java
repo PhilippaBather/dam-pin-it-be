@@ -2,8 +2,6 @@ package com.batherphilippa.pin_it_app_be.controller;
 
 import com.batherphilippa.pin_it_app_be.dto.UserDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
-import com.batherphilippa.pin_it_app_be.dto.UserLoginDTOIn;
-import com.batherphilippa.pin_it_app_be.exceptions.UserExistsException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.service.UserService;
 import jakarta.validation.Valid;
@@ -27,26 +25,9 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
-
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
-    @PostMapping("/users/auth/signup")
-    public ResponseEntity<UserDTOOut> registerUser(@Valid @RequestBody UserDTOIn newUser) throws UserExistsException {
-        userService.findByEmail(newUser.getEmail());
-        UserDTOOut userDTOOut = userService.save(newUser);
-        logger.info("UserController: registerUser");
-        return new ResponseEntity<>(userDTOOut, HttpStatus.CREATED);
-    }
-
-    @PostMapping("/users/auth/login")
-    public ResponseEntity<UserDTOOut> getUser(@RequestBody UserLoginDTOIn user) throws UserNotFoundException {
-        UserDTOOut userDTOOut = userService.findUserOnLogin(user);
-        logger.info("UserController: getUser on login");
-        return new ResponseEntity<>(userDTOOut, HttpStatus.OK);
-    }
-
     @GetMapping("/users")
     public ResponseEntity<Set<UserDTOOut>> getAllUsers() {
         Set<UserDTOOut> users = userService.findAll();

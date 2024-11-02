@@ -54,6 +54,15 @@ public class GlobalExceptionHandler {
         return validationErrors;
     }
 
+    // 401 error
+    @ExceptionHandler(value = UnauthorisedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Response handleException(UnauthorisedException uae){
+        logger.info("GlobalExceptionHandle: Custom exception: UNAUTHORISED_EXCEPTION");
+        return new Response(ErrorType.UNAUTHORISED_EXCEPTION.getTimestamp(), ErrorType.UNAUTHORISED_EXCEPTION.getCode(), ErrorType.UNAUTHORISED_EXCEPTION.getHttpStatus(), uae.getMessage());
+    }
+
 
     // 404 error
     @ExceptionHandler(value = UserNotFoundException.class)

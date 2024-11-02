@@ -30,8 +30,8 @@ public class Guest {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "role")
-    private Role role;
+    @Column(name = "permissions")
+    private Permissions permissions;
 
     @ManyToOne
     @JsonBackReference(value = "guest_projects")

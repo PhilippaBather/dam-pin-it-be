@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -41,6 +42,7 @@ public class Project {
     @Column(name = "deadline")
     LocalDate deadline;
 
+    @CreationTimestamp
     @DateTimeFormat
     @Column(name = "created_on")
     LocalDate creationDate; // TODO: set at the BE

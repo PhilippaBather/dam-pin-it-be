@@ -6,9 +6,11 @@ import java.sql.Timestamp;
  * ErrorType - an enum to decribe the type of error: its code and state/name.
  */
 public enum ErrorType {
-    VALIDATION_UNPROCESSABLE_ENTITY_EXCEPTION("422", "VALIDATION ERROR: UNPROCESSEABLE ENTITY", new Timestamp(System.currentTimeMillis())),
+
+    UNAUTHORISED_EXCEPTION("404", "UNAUTHORISED EXCEMPTION", new Timestamp(System.currentTimeMillis())),
     USER_EXISTS_EXCEPTION("409", "USER EXISTS", new Timestamp(System.currentTimeMillis())),
-    USER_NOT_FOUND_EXCEPTION("404", "USER NOT FOUND", new Timestamp(System.currentTimeMillis()));;
+    USER_NOT_FOUND_EXCEPTION("404", "USER NOT FOUND", new Timestamp(System.currentTimeMillis())),
+    VALIDATION_UNPROCESSABLE_ENTITY_EXCEPTION("422", "VALIDATION ERROR: UNPROCESSEABLE ENTITY", new Timestamp(System.currentTimeMillis()));
 
     private final Timestamp timestamp;
     private final String code;
