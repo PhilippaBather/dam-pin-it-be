@@ -1,7 +1,6 @@
 package com.batherphilippa.pin_it_app_be.repository;
 
 import com.batherphilippa.pin_it_app_be.model.Project;
-import com.batherphilippa.pin_it_app_be.model.ProjectUser;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
