@@ -120,7 +120,7 @@ public class AppConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         logger.info("AppConfig_webSecurityCustomizer");
         return (web) -> web.ignoring().requestMatchers(
-                "/users", "/users/auth/signup", "/projects/*", "/project/*");
+                "/users", "/users/auth/signup");
     }
 
     @Bean
