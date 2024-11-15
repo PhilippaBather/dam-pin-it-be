@@ -100,7 +100,7 @@ public class AppConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/no-csrf","/users/auth/login").permitAll()
+                                .requestMatchers("/no-csrf","/users/auth/login", "/users", "/projects/*" , "/project/*", "project/user/*/project/*").permitAll()
                                 .anyRequest().authenticated()
                 );
 
@@ -120,7 +120,7 @@ public class AppConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         logger.info("AppConfig_webSecurityCustomizer");
         return (web) -> web.ignoring().requestMatchers(
-                "/users", "/users/auth/signup");
+                "/users/auth/signup");
     }
 
     @Bean
