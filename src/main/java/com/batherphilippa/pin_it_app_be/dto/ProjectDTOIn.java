@@ -1,6 +1,6 @@
 package com.batherphilippa.pin_it_app_be.dto;
 
-import com.batherphilippa.pin_it_app_be.model.Status;
+import com.batherphilippa.pin_it_app_be.model.ProjectStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +18,6 @@ public class ProjectDTOIn {
     private String title;
     private String description;
     private LocalDate deadline;
-    private Status projectStatus;
+    private ProjectStatus projectStatus;
 
 }
