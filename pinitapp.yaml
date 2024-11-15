@@ -228,7 +228,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Project"
+                $ref: "#/components/schemas/ProjectDTOOut"
         '500':
           description: Internal Server Error
           content:
@@ -256,7 +256,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Project"
+                $ref: "#/components/schemas/ProjectDTOOut"
         '500':
           description: Internal Server Error
           content:
@@ -290,7 +290,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Project"
+                $ref: "#/components/schemas/ProjectDTOOut"
         '404':
           description: Project Not Found
           content:
