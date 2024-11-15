@@ -31,7 +31,6 @@ public class Project {
     @Column(name = "project_id", updatable = false, nullable = false)
     private long id;
 
-    //@NotBlank(message = VALIDATION_PROJECT_TITLE_NOT_BLANK)
     @Size(min = 2, max = 50, message = VALIDATION_PROJECT_TITLE_SIZE)
     @Column(name = "title")
     private String title;
