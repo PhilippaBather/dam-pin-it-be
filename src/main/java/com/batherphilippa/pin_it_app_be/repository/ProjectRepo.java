@@ -31,7 +31,14 @@ public interface ProjectRepo extends CrudRepository<Project, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = " DELETE FROM projects p " +
+    @Query(value = "DELETE FROM projects p " +
             " WHERE p.project_id = :projectId;", nativeQuery = true)
     void deleteAllUserOwnedProjects(long projectId) throws UserNotFoundException;
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE projects p " +
+            " SET p.deadline = :deadline, p.description = :description, p.title = :title " +
+            " WHERE p.project_id = :projectId;", nativeQuery = true)
+    void updateProjectByProjectId(long projectId, String deadline, String description, String title);
 }
