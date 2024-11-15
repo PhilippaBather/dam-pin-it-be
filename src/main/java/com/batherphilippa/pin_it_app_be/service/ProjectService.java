@@ -93,27 +93,10 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    public ProjectDTOOut updateProjectById(long projectId, ProjectDTOIn projectDTOIn) throws ProjectNotFoundException {
+    public void updateProjectById(long projectId, String deadline, String description, String title) throws ProjectNotFoundException {
         logger.info("UserService: updateProjectById");
-
-        Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
-        modelMapper.map(projectDTOIn, project);
-        // set ID lost in mapping
-        project.setId(projectId);
-        // set project creation date
-        project.setCreationDate(LocalDate.now());
-        // project status CURRENT by default if null
-        if(project.getProjectStatus() == null) {
-            project.setProjectStatus(ProjectStatus.CURRENT);
-        }
-
-        // save to repo
-        projectRepo.save(project);
-
-        // map saved project to ProjectDTOOut
-        ProjectDTOOut projectDTOOut = new ProjectDTOOut();
-        modelMapper.map(project, projectDTOOut);
-        return projectDTOOut;
+        projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
+        projectRepo.updateProjectByProjectId(projectId, deadline, description, title);
     }
     @Override
     public void deleteProjectById(long projectId) throws ProjectNotFoundException {
