@@ -84,6 +84,15 @@ public class GlobalExceptionHandler {
         return new Response(ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getCode(), ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getHttpStatus(), pnfe.getMessage());
     }
 
+    // 404 error
+    @ExceptionHandler(value = TaskNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(TaskNotFoundException tnfe) {
+        logger.info("GlobalExceptionHandle: Custom exception: TASK_NOT_FOUND");
+        return new Response(ErrorType.TASK_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.TASK_NOT_FOUND_EXCEPTION.getCode(), ErrorType.TASK_NOT_FOUND_EXCEPTION.getHttpStatus(), tnfe.getMessage());
+    }
+
     // 409 error
     @ExceptionHandler(value = UserExistsException.class)
     @ResponseBody
