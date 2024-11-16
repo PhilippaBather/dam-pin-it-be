@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+/**
+ * TaskService - the implementation of the Task Service interface (ITaskService).
+ */
 @Service
 public class TaskService implements ITaskService {
 

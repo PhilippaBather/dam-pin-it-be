@@ -6,6 +6,9 @@ import com.batherphilippa.pin_it_app_be.model.Task;
 
 import java.util.Set;
 
+/**
+ * ITaskService - Task Service interface defining the methods to be used.
+ */
 public interface ITaskService {
 
     Set<TaskDetailsDTOOut> getAllTaskDetailsByProjectId(long projectId);

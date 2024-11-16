@@ -1,6 +1,9 @@
 package com.batherphilippa.pin_it_app_be.service;
 
-import com.batherphilippa.pin_it_app_be.dto.*;
+import com.batherphilippa.pin_it_app_be.dto.ProjectAndPermissionsDTOOut;
+import com.batherphilippa.pin_it_app_be.dto.ProjectDTOIn;
+import com.batherphilippa.pin_it_app_be.dto.ProjectDTOOut;
+import com.batherphilippa.pin_it_app_be.dto.ProjectUserDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.*;
@@ -12,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
