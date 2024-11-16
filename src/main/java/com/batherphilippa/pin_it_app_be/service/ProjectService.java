@@ -120,6 +120,7 @@ public class ProjectService implements IProjectService {
     private Set<ProjectUserDTOOut> convertToProjectUserDTOOutSet(Set<ProjectUser> projects) {
         Set<ProjectUserDTOOut> projectUserDTOOutSet = new HashSet<>();
         for(ProjectUser projectUser : projects) {
+            // TODO: use the modelMapper
             ProjectUserDTOOut projectUserDTOOut = new ProjectUserDTOOut();
             projectUserDTOOut.setProjectId(projectUser.getProject().getId());
             projectUserDTOOut.setUserId(projectUser.getUser().getId());
