@@ -1,5 +1,8 @@
 package com.batherphilippa.pin_it_app_be.model;
 
+/**
+ * Task - defines the status of a task object.
+ */
 public enum TaskStatus {
     PENDING("Pending", 1),
     IN_PROGRESS("In Progress", 2),

@@ -10,7 +10,6 @@ import java.time.LocalDate;
 /**
  * ProjectDTOIn - defines the data transfer object for an incoming project object.
  */
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

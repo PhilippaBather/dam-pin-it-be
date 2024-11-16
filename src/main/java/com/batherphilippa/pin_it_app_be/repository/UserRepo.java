@@ -1,6 +1,5 @@
 package com.batherphilippa.pin_it_app_be.repository;
 
-import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
 import com.batherphilippa.pin_it_app_be.model.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

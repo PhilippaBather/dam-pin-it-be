@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+/**
+ * TaskDTOIn - defines the data transfer object for an incoming task object.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

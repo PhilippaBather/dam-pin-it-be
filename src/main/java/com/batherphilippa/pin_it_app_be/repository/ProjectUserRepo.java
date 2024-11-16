@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+/**
+ * ProjectUserRepo - the ProjectUser Repository containing additional helper methods.
+ */
 @Repository
 public interface ProjectUserRepo extends CrudRepository<ProjectUser, Long> {
 

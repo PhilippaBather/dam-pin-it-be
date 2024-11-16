@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+/**
+ * TaskController - controller to manage CRUD operations for a project's tasks.
+ */
 @Controller
 public class TaskController {
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
@@ -35,6 +38,7 @@ public class TaskController {
 
     @GetMapping("/tasks")
     public ResponseEntity<Set<TaskDetailsDTOOut>> getAllTasksByProjectId(@PathVariable long userId, @PathVariable long projectId) throws ProjectNotFoundException, UserNotFoundException {
+        logger.info("TaskController: getAllTasksByProjectId");
         // check project and user exist or throw corresponding exception
         projectService.getProjectById(projectId, userId);
         userService.findById(userId);
@@ -45,6 +49,7 @@ public class TaskController {
     }
     @PostMapping("/tasks")
     public ResponseEntity<Task> saveTask(@PathVariable long userId, @PathVariable long projectId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws ProjectNotFoundException, UserNotFoundException {
+        logger.info("TaskController: saveTask");
         // check project and user exist or throw corresponding exception
         projectService.getProjectById(projectId, userId);
         userService.findById(userId);
@@ -55,6 +60,7 @@ public class TaskController {
 
     @DeleteMapping("/tasks/user/{userId}/project/{projectId}")
     public ResponseEntity<Void> deleteAllTasksByProjectId(@PathVariable long userId, @PathVariable long projectId) throws ProjectNotFoundException {
+        logger.info("TaskController: deleteAllTasksByProjectId");
         // check project and user exist or throw corresponding exception
         projectService.getProjectById(projectId, userId);
         userService.findById(userId);
@@ -64,6 +70,7 @@ public class TaskController {
 
     @GetMapping("/task/{taskId}/user/{userId}/project/{projectId}")
     public ResponseEntity<Task> getTaskById(@PathVariable long taskId, @PathVariable long projectId, @PathVariable long userId) throws ProjectNotFoundException, UserNotFoundException, TaskNotFoundException {
+        logger.info("TaskController: getTaskById");
         // check project and user exist or throw corresponding exception
         projectService.getProjectById(projectId, userId);
         userService.findById(userId);
@@ -73,6 +80,7 @@ public class TaskController {
 
     @PutMapping("/task/{taskId}/user/{userId}/project/{projectId}")
     public ResponseEntity<Task> updateTaskById(@PathVariable long projectId, @PathVariable long userId, @PathVariable long taskId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws ProjectNotFoundException, UserNotFoundException, TaskNotFoundException {
+        logger.info("TaskController: updateTaskById");
         // check project and user exist or throw corresponding exception
         projectService.getProjectById(projectId, userId);
         userService.findById(userId);
@@ -82,6 +90,7 @@ public class TaskController {
 
     @DeleteMapping("/task/{taskId}/user/{userId}/project/{projectId}")
     public ResponseEntity<Void> deleteTaskById(@PathVariable long projectId, @PathVariable long userId, @PathVariable long taskId) throws ProjectNotFoundException, UserNotFoundException, TaskNotFoundException {
+        logger.info("TaskController: deleteTaskById");
         // check project and user exist or throw corresponding exception
         projectService.getProjectById(projectId, userId);
         userService.findById(userId);

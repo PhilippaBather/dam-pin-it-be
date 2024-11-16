@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * TaskRepo - the Task Repository containing additional helper methods.
+ */
 @Repository
 public interface TaskRepo extends CrudRepository<Task, Long> {
 
