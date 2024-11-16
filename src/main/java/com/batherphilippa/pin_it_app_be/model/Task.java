@@ -46,6 +46,14 @@ public class Task {
     @Column(name = "priority_level")
     private Priority priorityLevel;
 
+    @NotBlank(message = VALIDATION_TASK_STATUS_NOT_BLANK)
+    @Column(name = "task_status")
+    private TaskStatus taskStatus;
+
+    @NotBlank(message = VALIDATION_TASK_POSITION_NOT_BLANK)
+    @Column(name = "task_position")
+    private int taskPosition;
+
     @ManyToOne
     @JsonBackReference(value = "projects_tasks")
     @JoinColumn(name = "project_id")
