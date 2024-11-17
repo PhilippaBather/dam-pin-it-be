@@ -1,7 +1,6 @@
 package com.batherphilippa.pin_it_app_be.controller;
 
 import com.batherphilippa.pin_it_app_be.dto.TaskDTOIn;
-import com.batherphilippa.pin_it_app_be.dto.TaskDetailsDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.TaskNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
@@ -36,18 +35,17 @@ public class TaskController {
         this.userService = userService;
     }
 
-    @GetMapping("/tasks")
-    public ResponseEntity<Set<TaskDetailsDTOOut>> getAllTasksByProjectId(@PathVariable long userId, @PathVariable long projectId) throws ProjectNotFoundException, UserNotFoundException {
+    @GetMapping("/tasks/user/{userId}/project/{projectId}")
+    public ResponseEntity<Set<Task>> getAllTasksByProjectId(@PathVariable long userId, @PathVariable long projectId) throws ProjectNotFoundException, UserNotFoundException {
         logger.info("TaskController: getAllTasksByProjectId");
-        // check project and user exist or throw corresponding exception
+        // check project exist or throw corresponding exception
         projectService.getProjectById(projectId, userId);
-        userService.findById(userId);
         // get tasks
-        Set<TaskDetailsDTOOut> taskDetailsDTOOut = taskService.getAllTaskDetailsByProjectId(projectId);
-        return new ResponseEntity<>(taskDetailsDTOOut, HttpStatus.OK);
+        Set<Task> taskSet = taskService.getAllTaskDetailsByProjectId(projectId);
+        return new ResponseEntity<>(taskSet, HttpStatus.OK);
 
     }
-    @PostMapping("/tasks")
+    @PostMapping("/tasks/user/{userId}/project/{projectId}")
     public ResponseEntity<Task> saveTask(@PathVariable long userId, @PathVariable long projectId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws ProjectNotFoundException, UserNotFoundException {
         logger.info("TaskController: saveTask");
         // check project and user exist or throw corresponding exception
