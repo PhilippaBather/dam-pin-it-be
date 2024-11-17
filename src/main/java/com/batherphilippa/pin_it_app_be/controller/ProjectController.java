@@ -59,10 +59,10 @@ public class ProjectController {
     }
 
     @PutMapping("/project/{projectId}")
-    public ResponseEntity<ProjectDTOOut> updateProjectById(@PathVariable long projectId, @Valid @RequestBody ProjectDTOIn projectDTOIn) throws ProjectNotFoundException {
-        ProjectDTOOut projectDTOOut = projectService.updateProjectById(projectId, projectDTOIn);
+    public ResponseEntity<ProjectAndPermissionsDTOOut> updateProjectById(@PathVariable long projectId, @Valid @RequestBody ProjectDTOIn projectDTOIn) throws ProjectNotFoundException {
+        projectService.updateProjectById(projectId, String.valueOf(projectDTOIn.getDeadline()), projectDTOIn.getDescription(), projectDTOIn.getTitle());
         logger.info("ProjectController: updateProjectById");
-        return new ResponseEntity<>(projectDTOOut, HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/project/{projectId}")

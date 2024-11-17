@@ -19,5 +19,4 @@ public class ProjectDTOIn {
     private String description;
     private LocalDate deadline;
     private ProjectStatus projectStatus;
-
 }
