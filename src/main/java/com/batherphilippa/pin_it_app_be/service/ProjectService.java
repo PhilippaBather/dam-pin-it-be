@@ -119,6 +119,7 @@ public class ProjectService implements IProjectService {
 
     @Override
     public void deleteUserProjectsOnDeleteUser(User user) {
+        // TODO get tasks by list project ids; delete those tasks
         // get list of projects for deletion where the user is the project OWNER
         Set<ProjectUser> usersOwnedProjects = projectUserRepo.findAllUsersProjects(user.getId(), Permissions.OWNER.getPermissionsNum());
         Set<Project> projects = usersOwnedProjects.stream().map(ProjectUser::getProject).collect(Collectors.toSet());
