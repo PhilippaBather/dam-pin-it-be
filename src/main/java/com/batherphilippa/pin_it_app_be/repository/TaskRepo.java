@@ -40,4 +40,9 @@ public interface TaskRepo extends CrudRepository<Task, Long> {
             " WHERE t.project_id =:projectId;", nativeQuery = true)
     void deleteAllByProjectId(long projectId);
 
+    @Transactional
+    @Modifying
+    @Query(value = "INSERT INTO tasks (task_deadline, task_description, priority_level, task_position, task_status, task_title, project_id) " +
+            " VALUES(:deadline, :description, :priorityLevel, :taskPosition, :taskStatus, :title, :projectId);", nativeQuery = true)
+    void save(LocalDate deadline, String description, Priority priorityLevel, int taskPosition, TaskStatus taskStatus, String title, long projectId);
 }

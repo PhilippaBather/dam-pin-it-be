@@ -119,20 +119,17 @@ public class ProjectService implements IProjectService {
 
     @Override
     public void deleteUserProjectsOnDeleteUser(User user) {
-        // TODO get tasks by list project ids; delete those tasks
         // get list of projects for deletion where the user is the project OWNER
         Set<ProjectUser> usersOwnedProjects = projectUserRepo.findAllUsersProjects(user.getId(), Permissions.OWNER.getPermissionsNum());
         Set<Project> projects = usersOwnedProjects.stream().map(ProjectUser::getProject).collect(Collectors.toSet());
         projectUserRepo.deleteAllByUserId(user.getId());
-        for(Project project : projects) {
-            projectRepo.deleteAllUserOwnedProjects(project.getId());
-        }
+        projects.forEach((project) -> taskRepo.deleteAllByProjectId(project.getId()));
+        projects.forEach((project) -> projectRepo.deleteAllUserOwnedProjects(project.getId()));
     }
 
     private Set<ProjectUserDTOOut> convertToProjectUserDTOOutSet(Set<ProjectUser> projects) {
         Set<ProjectUserDTOOut> projectUserDTOOutSet = new HashSet<>();
         for(ProjectUser projectUser : projects) {
-            // TODO: use the modelMapper
             ProjectUserDTOOut projectUserDTOOut = new ProjectUserDTOOut();
             projectUserDTOOut.setProjectId(projectUser.getProject().getId());
             projectUserDTOOut.setUserId(projectUser.getUser().getId());

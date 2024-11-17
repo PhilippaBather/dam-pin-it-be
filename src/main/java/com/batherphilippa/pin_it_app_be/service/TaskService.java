@@ -1,15 +1,16 @@
 package com.batherphilippa.pin_it_app_be.service;
 
 import com.batherphilippa.pin_it_app_be.dto.TaskDTOIn;
-import com.batherphilippa.pin_it_app_be.dto.TaskDetailsDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.TaskNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.Task;
 import com.batherphilippa.pin_it_app_be.model.TaskStatus;
 import com.batherphilippa.pin_it_app_be.repository.TaskRepo;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -17,6 +18,8 @@ import java.util.Set;
  */
 @Service
 public class TaskService implements ITaskService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
     private final ModelMapper modelMapper;
     private final TaskRepo taskRepo;
@@ -38,11 +41,13 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public Task saveTask(TaskDTOIn taskDTOIn) {
+    public void saveTask(TaskDTOIn taskDTOIn) {
         Task task = new Task();
         modelMapper.map(taskDTOIn, task);
         task.setTaskStatus(TaskStatus.setTaskStatusByNum(taskDTOIn.getTaskStatus()));
-        return taskRepo.save(task);
+        logger.info("TaskController: save task");
+        taskRepo.save(taskDTOIn.getDeadline(), taskDTOIn.getDescription(), taskDTOIn.getPriorityLevel(), taskDTOIn.getTaskPosition(),
+                TaskStatus.setTaskStatusByNum(taskDTOIn.getTaskStatus()), taskDTOIn.getTitle(), taskDTOIn.getProjectId());
     }
 
     @Override

@@ -46,14 +46,14 @@ public class TaskController {
 
     }
     @PostMapping("/tasks/user/{userId}/project/{projectId}")
-    public ResponseEntity<Task> saveTask(@PathVariable long userId, @PathVariable long projectId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws ProjectNotFoundException, UserNotFoundException {
+    public ResponseEntity<TaskDTOIn> saveTask(@PathVariable long userId, @PathVariable long projectId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws ProjectNotFoundException, UserNotFoundException {
         logger.info("TaskController: saveTask");
         // check project and user exist or throw corresponding exception
         projectService.getProjectById(projectId, userId);
         userService.findById(userId);
         // save task
-        Task task = taskService.saveTask(taskDTOIn);
-        return new ResponseEntity<>(task, HttpStatus.CREATED);
+        taskService.saveTask(taskDTOIn);
+        return new ResponseEntity<>(taskDTOIn, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/tasks/user/{userId}/project/{projectId}")

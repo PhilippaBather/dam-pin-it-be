@@ -13,7 +13,7 @@ public interface ITaskService {
 
     Set<Task> getAllTaskDetailsByProjectId(long projectId);
     Task getTaskById(long taskId);
-    Task saveTask(TaskDTOIn taskDTOIn);
+    void saveTask(TaskDTOIn taskDTOIn);
     Task updateTaskById(long taskId, TaskDTOIn taskDTOIn);
     void deleteTaskById(long taskId);
     void deleteAllTasksByProjectId(long projectId);
