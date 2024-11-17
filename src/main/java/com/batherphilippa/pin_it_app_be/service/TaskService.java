@@ -4,10 +4,12 @@ import com.batherphilippa.pin_it_app_be.dto.TaskDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.TaskDetailsDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.TaskNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.Task;
+import com.batherphilippa.pin_it_app_be.model.TaskStatus;
 import com.batherphilippa.pin_it_app_be.repository.TaskRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -24,8 +26,10 @@ public class TaskService implements ITaskService {
         this.modelMapper = modelMapper;
     }
     @Override
-    public Set<TaskDetailsDTOOut> getAllTaskDetailsByProjectId(long projectId) {
-        return taskRepo.findAllTasksByProjectId(projectId);
+    public Set<Task> getAllTaskDetailsByProjectId(long projectId) {
+        Set<Task> taskSet = taskRepo.findAllTasksByProjectId(projectId);
+        System.out.println(taskSet.size());
+        return taskSet;
     }
 
     @Override
@@ -37,14 +41,16 @@ public class TaskService implements ITaskService {
     public Task saveTask(TaskDTOIn taskDTOIn) {
         Task task = new Task();
         modelMapper.map(taskDTOIn, task);
+        task.setTaskStatus(TaskStatus.setTaskStatusByNum(taskDTOIn.getTaskStatus()));
         return taskRepo.save(task);
     }
 
     @Override
     public Task updateTaskById(long taskId, TaskDTOIn taskDTOIn) throws TaskNotFoundException {
-        Task task = taskRepo.getTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
-        modelMapper.map(taskDTOIn, task);
-        return taskRepo.save(task);
+        taskRepo.getTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
+        taskRepo.updateTaskById(taskId, taskDTOIn.getDeadline(), taskDTOIn.getDescription(), taskDTOIn.getPriorityLevel(),
+                taskDTOIn.getTitle(), taskDTOIn.getTaskPosition(), TaskStatus.setTaskStatusByNum(taskDTOIn.getTaskStatus()));
+        return taskRepo.getTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
     }
 
     @Override

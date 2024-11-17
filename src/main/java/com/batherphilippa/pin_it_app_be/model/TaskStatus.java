@@ -24,4 +24,13 @@ public enum TaskStatus {
     public int getStatusNum() {
         return this.statusNum;
     }
+
+    public static TaskStatus setTaskStatusByNum(int num) {
+        return switch(num) {
+            case 2 -> TaskStatus.IN_PROGRESS;
+            case 3 -> TaskStatus.BLOCKED;
+            case 4 -> TaskStatus.COMPLETED;
+            default -> TaskStatus.PENDING;
+        };
+    }
 }

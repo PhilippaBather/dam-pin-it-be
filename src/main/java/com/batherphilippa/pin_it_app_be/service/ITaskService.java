@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public interface ITaskService {
 
-    Set<TaskDetailsDTOOut> getAllTaskDetailsByProjectId(long projectId);
+    Set<Task> getAllTaskDetailsByProjectId(long projectId);
     Task getTaskById(long taskId);
     Task saveTask(TaskDTOIn taskDTOIn);
     Task updateTaskById(long taskId, TaskDTOIn taskDTOIn);
