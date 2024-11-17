@@ -21,4 +21,5 @@ public class TaskDTOIn {
     private Priority priorityLevel;
     private int taskStatus;
     private int taskPosition;
+    private long projectId;
 }
