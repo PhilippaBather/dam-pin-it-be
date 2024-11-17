@@ -1,18 +1,21 @@
 package com.batherphilippa.pin_it_app_be.service;
 
-import com.batherphilippa.pin_it_app_be.dto.*;
+import com.batherphilippa.pin_it_app_be.dto.ProjectAndPermissionsDTOOut;
+import com.batherphilippa.pin_it_app_be.dto.ProjectDTOIn;
+import com.batherphilippa.pin_it_app_be.dto.ProjectDTOOut;
+import com.batherphilippa.pin_it_app_be.dto.ProjectUserDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.*;
 import com.batherphilippa.pin_it_app_be.repository.ProjectRepo;
 import com.batherphilippa.pin_it_app_be.repository.ProjectUserRepo;
+import com.batherphilippa.pin_it_app_be.repository.TaskRepo;
 import com.batherphilippa.pin_it_app_be.repository.UserRepo;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,12 +30,14 @@ public class ProjectService implements IProjectService {
 
     private final ProjectRepo projectRepo;
     private final ProjectUserRepo projectUserRepo;
+    private final TaskRepo taskRepo;
     private final UserRepo userRepo;
     private final ModelMapper modelMapper;
 
-    public ProjectService(ProjectRepo projectRepo, ProjectUserRepo projectUserRepo, UserRepo userRepo, ModelMapper modelMapper) {
+    public ProjectService(ProjectRepo projectRepo, ProjectUserRepo projectUserRepo, TaskRepo taskRepo, UserRepo userRepo, ModelMapper modelMapper) {
         this.projectRepo = projectRepo;
         this.projectUserRepo = projectUserRepo;
+        this.taskRepo = taskRepo;
         this.userRepo = userRepo;
         this.modelMapper = modelMapper;
     }
@@ -101,20 +106,25 @@ public class ProjectService implements IProjectService {
     @Override
     public void deleteProjectById(long projectId) throws ProjectNotFoundException {
         Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
+        // delete associated tasks in Tasks table
+        taskRepo.deleteAllByProjectId(projectId);
+        logger.info("ProjectService: deleteProject by Id: associated tasks deleted");
+        // delete projects in Project_User join table
         projectUserRepo.deleteAllByProjectId(project.getId());
+        logger.info("ProjectService: deleteProject by Id: projects removed from Project_User join table");
+        // delete projects in Project table
         projectRepo.deleteAllByProjectId(project.getId());
-        logger.info("ProjectService: user identified by ID; entity deleted");
+        logger.info("ProjectService: deleteProject by Id: projects removed from Project table");
     }
 
     @Override
     public void deleteUserProjectsOnDeleteUser(User user) {
-        Set<ProjectUser> usersOwnedProjects = projectUserRepo.findAllUsersProjects(user.getId());
+        // get list of projects for deletion where the user is the project OWNER
+        Set<ProjectUser> usersOwnedProjects = projectUserRepo.findAllUsersProjects(user.getId(), Permissions.OWNER.getPermissionsNum());
         Set<Project> projects = usersOwnedProjects.stream().map(ProjectUser::getProject).collect(Collectors.toSet());
         projectUserRepo.deleteAllByUserId(user.getId());
-
-        for(Project project : projects) {
-            projectRepo.deleteAllUserOwnedProjects(project.getId());
-        }
+        projects.forEach((project) -> taskRepo.deleteAllByProjectId(project.getId()));
+        projects.forEach((project) -> projectRepo.deleteAllUserOwnedProjects(project.getId()));
     }
 
     private Set<ProjectUserDTOOut> convertToProjectUserDTOOutSet(Set<ProjectUser> projects) {

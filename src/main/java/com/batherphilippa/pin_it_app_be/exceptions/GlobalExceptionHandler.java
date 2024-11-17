@@ -65,6 +65,15 @@ public class GlobalExceptionHandler {
         return new Response(ErrorType.UNAUTHORISED_EXCEPTION.getTimestamp(), ErrorType.UNAUTHORISED_EXCEPTION.getCode(), ErrorType.UNAUTHORISED_EXCEPTION.getHttpStatus(), uae.getMessage());
     }
 
+    // 401 error
+    @ExceptionHandler(value = UserNotAuthorisedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Response handleException(UserNotAuthorisedException unae){
+        logger.info("GlobalExceptionHandle: Custom exception: UNAUTHORISED_EXCEPTION");
+        return new Response(ErrorType.USER_UNAUTHORISED_EXCEPTION.getTimestamp(), ErrorType.USER_UNAUTHORISED_EXCEPTION.getCode(), ErrorType.USER_UNAUTHORISED_EXCEPTION.getHttpStatus(), unae.getMessage());
+    }
+
 
     // 404 error
     @ExceptionHandler(value = UserNotFoundException.class)
@@ -82,6 +91,15 @@ public class GlobalExceptionHandler {
     public Response handleException(ProjectNotFoundException pnfe){
         logger.info("GlobalExceptionHandle: Custom exception: PROJECT_NOT_FOUND");
         return new Response(ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getCode(), ErrorType.PROJECT_NOT_FOUND_EXCEPTION.getHttpStatus(), pnfe.getMessage());
+    }
+
+    // 404 error
+    @ExceptionHandler(value = TaskNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(TaskNotFoundException tnfe) {
+        logger.info("GlobalExceptionHandle: Custom exception: TASK_NOT_FOUND");
+        return new Response(ErrorType.TASK_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.TASK_NOT_FOUND_EXCEPTION.getCode(), ErrorType.TASK_NOT_FOUND_EXCEPTION.getHttpStatus(), tnfe.getMessage());
     }
 
     // 409 error

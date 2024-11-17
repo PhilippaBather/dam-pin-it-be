@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * AuthController - controller to manage CRUD operations for authentication.
+ */
 @RestController
 public class AuthController {
 

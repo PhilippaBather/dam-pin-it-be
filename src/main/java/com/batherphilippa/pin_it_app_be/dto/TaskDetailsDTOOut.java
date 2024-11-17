@@ -1,6 +1,6 @@
 package com.batherphilippa.pin_it_app_be.dto;
 
-import com.batherphilippa.pin_it_app_be.model.ProjectStatus;
+import com.batherphilippa.pin_it_app_be.model.Priority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,14 +8,16 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
- * ProjectDTOIn - defines the data transfer object for an incoming project object.
+ * UserDTOIn - defines the data transfer object for an outgoing task object.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectDTOIn {
+public class TaskDetailsDTOOut {
+
     private String title;
-    private String description;
     private LocalDate deadline;
-    private ProjectStatus projectStatus;
+    private Priority priorityLevel;
+    private int taskStatus;
+    private int taskPosition;
 }

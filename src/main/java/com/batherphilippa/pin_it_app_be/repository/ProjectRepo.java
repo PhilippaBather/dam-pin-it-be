@@ -36,7 +36,7 @@ public interface ProjectRepo extends CrudRepository<Project, Long> {
     void deleteAllUserOwnedProjects(long projectId) throws UserNotFoundException;
 
     @Transactional
-    @Modifying
+    @Modifying(clearAutomatically=true) // clears non-flushed values from the EntityManager
     @Query(value = "UPDATE projects p " +
             " SET p.deadline = :deadline, p.description = :description, p.title = :title " +
             " WHERE p.project_id = :projectId;", nativeQuery = true)

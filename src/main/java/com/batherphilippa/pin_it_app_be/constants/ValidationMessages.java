@@ -15,6 +15,8 @@ public class ValidationMessages {
     public static final String VALIDATION_SURNAME_NOT_BLANK = "A surname must be entered.";
     public static final String VALIDATION_SURNAME_SIZE = "A surname must be between 2 and 100 characters inclusive.";
     public static final String VALIDATION_TASK_DESCRIPTION_NOT_BLANK = "A description is required.";
+    public static final String VALIDATION_TASK_STATUS_NOT_BLANK = "A task status is required.";
+    public static final String VALIDATION_TASK_POSITION_NOT_BLANK = "A task position is required.";
     public static final String VALIDATION_TASK_TITLE_NOT_BLANK = "A task title is required.";
     public static final String VALIDATION_TASK_TITLE_SIZE = "A task title must be between 2 and 50  characters inclusive.";
 }

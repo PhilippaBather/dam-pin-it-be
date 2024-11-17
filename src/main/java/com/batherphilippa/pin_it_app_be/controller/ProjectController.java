@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+/**
+ * ProjectController - controller to manage CRUD operations for a project.
+ */
 @Validated
 @RestController
 public class ProjectController {

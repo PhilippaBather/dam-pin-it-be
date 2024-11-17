@@ -2,7 +2,9 @@ package com.batherphilippa.pin_it_app_be.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,6 +47,14 @@ public class Task {
     // "NONE" by default if no value is assigned
     @Column(name = "priority_level")
     private Priority priorityLevel;
+
+    @Column(name = "task_status")
+    private TaskStatus taskStatus;
+
+    @NotNull(message = VALIDATION_TASK_POSITION_NOT_BLANK)
+    @Min(value = 1)
+    @Column(name = "task_position")
+    private int taskPosition;
 
     @ManyToOne
     @JsonBackReference(value = "projects_tasks")

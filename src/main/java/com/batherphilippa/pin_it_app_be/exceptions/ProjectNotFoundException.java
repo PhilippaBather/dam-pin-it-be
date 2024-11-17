@@ -10,8 +10,4 @@ public class ProjectNotFoundException extends RuntimeException {
     public ProjectNotFoundException(long userId) {
         super(EXCEPTION_PROJECT_NOT_FOUND_ID + userId);
     }
-
-    public ProjectNotFoundException() {
-        super("NO PROJECTS FOUND");
-    }
 }
