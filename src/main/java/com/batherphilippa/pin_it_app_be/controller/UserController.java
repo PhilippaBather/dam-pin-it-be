@@ -2,6 +2,7 @@ package com.batherphilippa.pin_it_app_be.controller;
 
 import com.batherphilippa.pin_it_app_be.dto.UserDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
+import com.batherphilippa.pin_it_app_be.dto.UserLoginDTOIn;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.User;
 import com.batherphilippa.pin_it_app_be.service.UserService;
@@ -47,6 +48,13 @@ public class UserController {
         // map to return the required output to controller
         modelMapper.map(user, userDTOOut);
         logger.info("UserController: getUserById");
+        return new ResponseEntity<>(userDTOOut, HttpStatus.OK);
+    }
+
+    @PostMapping("/users")
+    public ResponseEntity<UserDTOOut> getUserDetails(@Valid @RequestBody UserLoginDTOIn userLoginDTOIn) throws UserNotFoundException {
+        logger.info("DTO in: " + userLoginDTOIn);
+        UserDTOOut userDTOOut = userService.findByEmail(userLoginDTOIn.getEmail());
         return new ResponseEntity<>(userDTOOut, HttpStatus.OK);
     }
 

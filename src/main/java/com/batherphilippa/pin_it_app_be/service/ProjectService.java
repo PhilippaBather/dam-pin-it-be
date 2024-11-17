@@ -71,7 +71,9 @@ public class ProjectService implements IProjectService {
 
         // save project
         Project project = new Project();
+        System.out.println(projectDTOIn.getDeadline());
         modelMapper.map(projectDTOIn, project);
+        project.setProjectStatus(ProjectStatus.CURRENT);
         project = projectRepo.save(project);
 
         // map saved project to ProjectDTOOut
@@ -102,7 +104,7 @@ public class ProjectService implements IProjectService {
         project.setCreationDate(LocalDate.now());
         // project status CURRENT by default if null
         if(project.getProjectStatus() == null) {
-            project.setProjectStatus(Status.CURRENT);
+            project.setProjectStatus(ProjectStatus.CURRENT);
         }
 
         // save to repo

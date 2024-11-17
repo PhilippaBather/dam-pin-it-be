@@ -1,5 +1,6 @@
 package com.batherphilippa.pin_it_app_be.repository;
 
+import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
 import com.batherphilippa.pin_it_app_be.model.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,9 +21,8 @@ public interface UserRepo extends CrudRepository<User, Long> {
     @NonNull
     @Override
     Set<User> findAll();
-    Optional<User> findByEmail(String email);
     Optional<User> findById(long userId);
-
+    Optional<User> findByEmail(String email);
     @Transactional
     @Modifying
     @Query(value = "DELETE FROM users " +

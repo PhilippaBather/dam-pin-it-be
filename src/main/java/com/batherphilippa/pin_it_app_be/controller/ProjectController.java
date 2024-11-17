@@ -1,9 +1,6 @@
 package com.batherphilippa.pin_it_app_be.controller;
 
-import com.batherphilippa.pin_it_app_be.dto.ProjectAndPermissionsDTOOut;
-import com.batherphilippa.pin_it_app_be.dto.ProjectDTOIn;
-import com.batherphilippa.pin_it_app_be.dto.ProjectDTOOut;
-import com.batherphilippa.pin_it_app_be.dto.ProjectUserDTOOut;
+import com.batherphilippa.pin_it_app_be.dto.*;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.User;
@@ -53,6 +50,12 @@ public class ProjectController {
         ProjectDTOOut projectDTOOut = projectService.saveProject(projectDTOIn, user);
         logger.info("ProjectController: saveProject");
         return new ResponseEntity<>(projectDTOOut, HttpStatus.CREATED);
+    }
+
+    // TODO
+    @PostMapping("/projects/users/{userId}")
+    public ResponseEntity<ProjectPermissionsDTOOut> addUserToExistingProject(@PathVariable String email, @Valid @RequestBody ProjectPermissionsDTOIn projectPermissionsDTOIn) throws UserNotFoundException {
+        return null;
     }
 
     @PutMapping("/project/{projectId}")

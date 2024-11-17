@@ -1,6 +1,5 @@
 package com.batherphilippa.pin_it_app_be.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -40,18 +39,17 @@ public class Project {
     @Column(name = "description")
     private String description;
 
-    @NotBlank(message = VALIDATION_PROJECT_DEADLINE)
+    @DateTimeFormat
     @Column(name = "deadline")
-    private String deadline;
+    private LocalDate deadline;
 
     @CreationTimestamp
     @DateTimeFormat
     @Column(name = "created_on")
     LocalDate creationDate; // TODO: set at the BE
 
-    // "CURRENT" by default if no value is assigned
     @Column(name = "project_status")
-    private Status projectStatus; // TODO: ensure this at the BE
+    private ProjectStatus projectStatus;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Task> tasks = new HashSet<>();
@@ -66,5 +64,7 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Set<ProjectUser> userProjectsPermissions = new HashSet<>();
+
+
 
 }

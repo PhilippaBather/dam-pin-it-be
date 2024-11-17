@@ -2,6 +2,7 @@ package com.batherphilippa.pin_it_app_be.service;
 
 import com.batherphilippa.pin_it_app_be.dto.UserDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
+import com.batherphilippa.pin_it_app_be.dto.UserLoginDTOIn;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.Project;
 import com.batherphilippa.pin_it_app_be.model.ProjectUser;
@@ -51,6 +52,15 @@ public class UserService implements IUserService{
         User user = userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         logger.info("UserService: user found by ID");
         return user;
+    }
+
+    @Override
+    public UserDTOOut findByEmail(String email) throws UserNotFoundException {
+        User user = userRepo.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+        UserDTOOut userDTOOut = new UserDTOOut();
+        modelMapper.map(user, userDTOOut);
+        logger.info("UserService: user found by email and password");
+        return userDTOOut;
     }
 
     @Override
