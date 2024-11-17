@@ -18,9 +18,6 @@ import java.util.Set;
 public interface ProjectUserRepo extends CrudRepository<ProjectUser, Long> {
 
     ProjectUser findProjectUserByProjectIdAndUserId(long projectId, long userId);
-
-    Set<ProjectUser> findAllByProjectId(long projectId) throws ProjectNotFoundException;
-
     @Query(value = "SELECT pu.project_id, pu.user_id, pu.permissions," +
             " p.title, p.description, p.created_on, p.deadline, p.project_status " +
             " FROM project_user pu " +
