@@ -35,14 +35,21 @@ public interface TaskRepo extends CrudRepository<Task, Long> {
     void updateTaskById(long taskId, LocalDate deadline, String description, Priority priorityLevel, String title, int taskPosition, TaskStatus taskStatus);
 
     @Transactional
+    @Modifying(clearAutomatically=true) // clears non-flushed values from the EntityManager
+    @Query(value = "UPDATE tasks t" +
+            " SET t.task_position = :taskPosition, t.task_status = :taskStatus " +
+            " WHERE t.task_id = :taskId;", nativeQuery = true)
+    void updateTaskPositionById(long taskId, int taskPosition, TaskStatus taskStatus);
+
+    @Transactional
     @Modifying
     @Query(value = "DELETE FROM tasks t " +
             " WHERE t.project_id =:projectId;", nativeQuery = true)
     void deleteAllByProjectId(long projectId);
 
-    @Transactional
-    @Modifying
-    @Query(value = "INSERT INTO tasks (task_deadline, task_description, priority_level, task_position, task_status, task_title, project_id) " +
-            " VALUES(:deadline, :description, :priorityLevel, :taskPosition, :taskStatus, :title, :projectId);", nativeQuery = true)
-    void save(LocalDate deadline, String description, Priority priorityLevel, int taskPosition, TaskStatus taskStatus, String title, long projectId);
+    //@Transactional
+    //@Modifying
+    //@Query(value = "INSERT INTO tasks (task_deadline, task_description, priority_level, task_position, task_status, task_title, project_id) " +
+    //        " VALUES(:deadline, :description, :priorityLevel, :taskPosition, :taskStatus, :title, :projectId);", nativeQuery = true)
+    //void save(LocalDate deadline, String description, Priority priorityLevel, int taskPosition, TaskStatus taskStatus, String title, long projectId);
 }
