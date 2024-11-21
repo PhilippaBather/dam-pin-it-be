@@ -100,7 +100,9 @@ public class AppConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/no-csrf","/users/auth/login", "/users", "/projects/*" , "/project/*", "project/user/*/project/*", "/tasks/user/*/project/*", "task/*/user/*/project/*").permitAll()
+                                .requestMatchers("/no-csrf","/users/auth/login", "/users", "/projects/*" ,
+                                        "/project/*", "project/user/*/project/*", "/tasks/user/*/project/*",
+                                        "/tasks-list/user/*/project/*", "task/*/user/*/project/*").permitAll()
                                 .anyRequest().authenticated()
                 );
 
