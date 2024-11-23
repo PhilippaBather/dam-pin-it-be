@@ -102,7 +102,7 @@ public class AppConfig {
                         auth
                                 .requestMatchers("/no-csrf","/users/auth/login", "/users", "/projects/*" ,
                                         "/project/*", "project/user/*/project/*", "/tasks/user/*/project/*",
-                                        "/tasks-list/user/*/project/*", "task/*/user/*/project/*").permitAll()
+                                        "/tasks-list/user/*/project/*", "task/*/user/*/project/*", "/guests").permitAll()
                                 .anyRequest().authenticated()
                 );
 
