@@ -71,6 +71,11 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    public Project getProjectByIdForGuest(long projectId, long userId) throws ProjectNotFoundException {
+        return projectRepo.findByProjectId(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
+    }
+
+    @Override
     public ProjectDTOOut saveProject(ProjectDTOIn projectDTOIn, User user) {
         logger.info("ProjectService: saveProject");
 
