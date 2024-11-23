@@ -23,7 +23,7 @@ public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "guest_id", updatable = false, nullable = false)
-    private long id;
+    private long guestId;
 
     @NotBlank(message = VALIDATION_EMAIL_NOT_BLANK)
     @Email
