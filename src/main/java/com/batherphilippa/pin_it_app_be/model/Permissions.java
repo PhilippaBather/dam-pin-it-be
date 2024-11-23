@@ -6,7 +6,7 @@ package com.batherphilippa.pin_it_app_be.model;
 public enum Permissions {
 
     OWNER("OWNER", 0),  // create, read, write, delete
-    EDITOR("EDITOR", 1), // read, write
+    EDITOR("EDITOR", 1), // read, write, delete tasks
     VIEWER("VIEWER", 2) ;// write
 
     private final String permissionsName;
@@ -32,7 +32,4 @@ public enum Permissions {
             default -> Permissions.VIEWER;
         };
     }
-
-
-
 }
