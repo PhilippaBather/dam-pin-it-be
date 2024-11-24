@@ -33,6 +33,9 @@ public class Guest {
     @Column(name = "permissions")
     private Permissions permissions;
 
+    @Column(name = "notified")
+    private boolean isNotified = false;
+
     @ManyToOne
     @JsonBackReference(value = "guest_projects")
     @JoinColumn(name = "user_id")

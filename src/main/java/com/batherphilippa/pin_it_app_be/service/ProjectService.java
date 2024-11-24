@@ -81,7 +81,6 @@ public class ProjectService implements IProjectService {
 
         // save project
         Project project = new Project();
-        System.out.println(projectDTOIn.getDeadline());
         modelMapper.map(projectDTOIn, project);
         project.setProjectStatus(ProjectStatus.CURRENT);
         project = projectRepo.save(project);
@@ -94,10 +93,14 @@ public class ProjectService implements IProjectService {
         user.getProjectsSet().add(project);
         userRepo.save(user);
 
+
         // update permissions in Project User join table
         ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(project.getId(), user.getId());
         projectUser.setPermissions(Permissions.OWNER);
         projectUserRepo.save(projectUser);
+
+        // add projectUser to userProjectsPermissions set
+        user.getUserProjectsPermissions().add(projectUser);
 
         return projectDTOOut;
     }

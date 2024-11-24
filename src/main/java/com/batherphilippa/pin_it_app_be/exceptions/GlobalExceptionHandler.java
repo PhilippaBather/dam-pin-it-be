@@ -107,13 +107,25 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response handleException(UserExistsException uee){
-        logger.info("GlobalExceptionHandle: Custom exception: USER_NOT_FOUND");
+        logger.info("GlobalExceptionHandle: Custom exception: USER_EXISTS");
         return new Response(ErrorType.USER_EXISTS_EXCEPTION.getTimestamp(), ErrorType.USER_EXISTS_EXCEPTION.getCode(), ErrorType.USER_EXISTS_EXCEPTION.getHttpStatus(), uee.getMessage());
     }
+
+    // 406 error
     @ResponseBody
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public String handleHttpMediaTypeNotAcceptableException() {
-        return "acceptable MIME type:" + MediaType.APPLICATION_JSON_VALUE;
+        return "unacceptable MIME type:" + MediaType.APPLICATION_JSON_VALUE;
     }
+
+    // 409 error
+    @ExceptionHandler(value = GuestInvitationException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Response handleException(GuestInvitationException gie) {
+        logger.info("GlobalExceptionHandle: Custom exception: GUEST_EXISTS");
+        return new Response(ErrorType.GUEST_PROJECT_EXISTS_EXCEPTION.getTimestamp(), ErrorType.GUEST_PROJECT_EXISTS_EXCEPTION.getCode(), ErrorType.GUEST_PROJECT_EXISTS_EXCEPTION.getHttpStatus(), gie.getMessage());
+    }
+
 
 }

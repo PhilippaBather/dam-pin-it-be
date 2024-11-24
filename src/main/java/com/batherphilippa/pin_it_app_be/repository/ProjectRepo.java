@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface ProjectRepo extends CrudRepository<Project, Long> {
 
-    @Query(value = "SELECT pu.project_id, pu.user_id, pu.permissions," +
+    @Query(value = "SELECT pu.project_id, pu.user_id, pu.permissions, " +
             " p.title, p.description, p.created_on, p.deadline, p.project_status " +
             " FROM projects p " +
             " INNER JOIN project_user pu ON pu.project_id = p.project_id" +

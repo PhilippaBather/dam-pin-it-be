@@ -7,10 +7,11 @@ import java.sql.Timestamp;
  */
 public enum ErrorType {
 
+    GUEST_PROJECT_EXISTS_EXCEPTION("409", "GUEST ALREADY EXISTS FOR PROJECT", new Timestamp(System.currentTimeMillis())),
     PROJECT_NOT_FOUND_EXCEPTION("404", "PROJECT NOT FOUND", new Timestamp(System.currentTimeMillis())),
     TASK_NOT_FOUND_EXCEPTION("404", "TASK NOT FOUND", new Timestamp(System.currentTimeMillis())),
     UNAUTHORISED_EXCEPTION("404", "UNAUTHORISED EXCEPTION", new Timestamp(System.currentTimeMillis())),
-    USER_UNAUTHORISED_EXCEPTION("404", "USER UNAUTHORISED EXCEPTION: INSUFFIENT PERMISSIONS TO AUTHORISE ACTION", new Timestamp(System.currentTimeMillis())),
+    USER_UNAUTHORISED_EXCEPTION("404", "USER UNAUTHORISED EXCEPTION: INSUFFICIENT PERMISSIONS TO AUTHORISE ACTION", new Timestamp(System.currentTimeMillis())),
     USER_EXISTS_EXCEPTION("409", "USER EXISTS", new Timestamp(System.currentTimeMillis())),
     USER_NOT_FOUND_EXCEPTION("404", "USER NOT FOUND", new Timestamp(System.currentTimeMillis())),
     VALIDATION_UNPROCESSABLE_ENTITY_EXCEPTION("422", "VALIDATION ERROR: UNPROCESSEABLE ENTITY", new Timestamp(System.currentTimeMillis()));

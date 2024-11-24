@@ -42,12 +42,10 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public UserDTOOut findByEmail(String email) throws UserNotFoundException {
+    public User findByEmail(String email) throws UserNotFoundException {
         User user = userRepo.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
-        UserDTOOut userDTOOut = new UserDTOOut();
-        modelMapper.map(user, userDTOOut);
-        logger.info("UserService: user found by email and password");
-        return userDTOOut;
+        logger.info("UserService: user found by email ");
+        return user;
     }
 
     @Override
