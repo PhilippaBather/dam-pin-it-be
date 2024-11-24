@@ -14,4 +14,5 @@ public class GuestDTOIn {
     private Permissions permissions;
     private long userId;
     private long projectId;
+    private String body;
 }

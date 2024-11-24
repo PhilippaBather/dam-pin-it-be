@@ -57,7 +57,7 @@ public class ProjectController {
 
     // TODO
     @PostMapping("/projects/users/{userId}")
-    public ResponseEntity<ProjectPermissionsDTOOut> addUserToExistingProject(@PathVariable String email, @Valid @RequestBody ProjectPermissionsDTOIn projectPermissionsDTOIn) throws UserNotFoundException {
+    public ResponseEntity<ProjectAndPermissionsDTOOut> addUserToExistingProject(@PathVariable String email, @Valid @RequestBody ProjectPermissionsDTOIn projectPermissionsDTOIn) throws UserNotFoundException {
         return null;
     }
 

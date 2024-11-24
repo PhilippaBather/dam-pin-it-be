@@ -5,6 +5,7 @@ import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.UserLoginDTOIn;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.User;
+import com.batherphilippa.pin_it_app_be.service.GuestService;
 import com.batherphilippa.pin_it_app_be.service.UserService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -28,9 +29,10 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final ModelMapper modelMapper;
 
-
+    private final GuestService guestService;
     private final UserService userService;
-    public UserController(UserService userService, ModelMapper modelMapper) {
+    public UserController(GuestService guestService, UserService userService, ModelMapper modelMapper) {
+        this.guestService = guestService;
         this.userService = userService;
         this.modelMapper = modelMapper;
     }
@@ -54,7 +56,13 @@ public class UserController {
     @PostMapping("/users")
     public ResponseEntity<UserDTOOut> getUserDetails(@Valid @RequestBody UserLoginDTOIn userLoginDTOIn) throws UserNotFoundException {
         logger.info("DTO in: " + userLoginDTOIn);
-        UserDTOOut userDTOOut = userService.findByEmail(userLoginDTOIn.getEmail());
+        User user = userService.findByEmail(userLoginDTOIn.getEmail());
+        logger.info("UserController: updateGuestProjectNotificationStatus");
+        // if true, set field to control FE alert management
+        boolean isNotification = updateGuestDetails(user);
+        UserDTOOut userDTOOut = new UserDTOOut();
+        modelMapper.map(user, userDTOOut);
+        userDTOOut.setUserNotified(isNotification);
         return new ResponseEntity<>(userDTOOut, HttpStatus.OK);
     }
 
@@ -66,9 +74,15 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<Void> deleteUserById(@PathVariable long userId) throws UserNotFoundException{
+    public ResponseEntity<Void> deleteUserById(@PathVariable long userId) throws UserNotFoundException {
         userService.deleteById(userId);
         logger.info("UserController: deleteUserById");
         return ResponseEntity.noContent().build();
+    }
+
+    private boolean updateGuestDetails(User user) {
+        logger.info("UserController: updateGuestDetails");
+        // if user email in Guests table and notification = false, !notification
+        return guestService.updateGuestDetails(user);
     }
 }
