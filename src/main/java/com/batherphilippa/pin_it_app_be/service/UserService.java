@@ -3,7 +3,11 @@ package com.batherphilippa.pin_it_app_be.service;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
+import com.batherphilippa.pin_it_app_be.model.Permissions;
+import com.batherphilippa.pin_it_app_be.model.Project;
+import com.batherphilippa.pin_it_app_be.model.ProjectUser;
 import com.batherphilippa.pin_it_app_be.model.User;
+import com.batherphilippa.pin_it_app_be.repository.ProjectUserRepo;
 import com.batherphilippa.pin_it_app_be.repository.UserRepo;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -11,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 /**
  * UserService - the implementation of the User Service interface (IUserService).
@@ -18,12 +23,16 @@ import java.util.Set;
 @Service
 public class UserService implements IUserService{
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private final ProjectUserRepo projectUserRepo;
     private final UserRepo userRepo;
+    private final GuestService guestService;
     private final ProjectService projectService;
     private final ModelMapper modelMapper;
 
-    public UserService(UserRepo userRepo, ProjectService projectService, ModelMapper modelMapper) {
+    public UserService(ProjectUserRepo projectUserRepo, UserRepo userRepo, GuestService guestService, ProjectService projectService, ModelMapper modelMapper) {
+        this.projectUserRepo = projectUserRepo;
         this.userRepo = userRepo;
+        this.guestService = guestService;
         this.projectService = projectService;
         this.modelMapper = modelMapper;
     }
@@ -81,5 +90,27 @@ public class UserService implements IUserService{
         }
         logger.info("UserService: convertUsersToDTOUTSet");
         return usersDTOOutSet;
+    }
+
+    public Map<Project, Permissions>  updateGuestProjects(User user) {
+
+        // get projects on which user is a guest and their permissions Map<Long,Permissions>
+        Map<Project, Permissions> guestProjects = guestService.updateGuestDetails(user.getEmail());
+
+        for (Map.Entry<Project, Permissions> entry : guestProjects.entrySet()) {
+            user.getProjectsSet().add(entry.getKey());
+        }
+        User savedUser = userRepo.save(user);
+
+        for (Map.Entry<Project, Permissions> entry : guestProjects.entrySet()) {
+            ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(entry.getKey().getId(), user.getId());
+            projectUser.setPermissions(entry.getValue());
+        }
+
+        // set notified as true in the guest
+
+        guestService.updateNotifiedStatus(savedUser.getEmail());
+
+        return guestProjects;
     }
 }

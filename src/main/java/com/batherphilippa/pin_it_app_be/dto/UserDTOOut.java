@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * UserDTOOut - defines the data transfer object for an outgoing user object.
  */
@@ -16,5 +19,5 @@ public class UserDTOOut {
     private String forename;
     private String surname;
     private String email;
-    private boolean isUserNotified;
+    private Set<Long> projectNotifications = new HashSet<>();
 }

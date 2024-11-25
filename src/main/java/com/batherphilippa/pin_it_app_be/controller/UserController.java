@@ -4,6 +4,8 @@ import com.batherphilippa.pin_it_app_be.dto.UserDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.UserLoginDTOIn;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
+import com.batherphilippa.pin_it_app_be.model.Permissions;
+import com.batherphilippa.pin_it_app_be.model.Project;
 import com.batherphilippa.pin_it_app_be.model.User;
 import com.batherphilippa.pin_it_app_be.service.GuestService;
 import com.batherphilippa.pin_it_app_be.service.UserService;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -59,10 +62,11 @@ public class UserController {
         User user = userService.findByEmail(userLoginDTOIn.getEmail());
         logger.info("UserController: updateGuestProjectNotificationStatus");
         // if true, set field to control FE alert management
-        boolean isNotification = updateGuestDetails(user);
+        Set<Long> guestProjectIds = guestService.getGuestProjectIds(user);
+        Map<Project, Permissions> projectNotifications = userService.updateGuestProjects(user);
         UserDTOOut userDTOOut = new UserDTOOut();
+        userDTOOut.setProjectNotifications(guestProjectIds);
         modelMapper.map(user, userDTOOut);
-        userDTOOut.setUserNotified(isNotification);
         return new ResponseEntity<>(userDTOOut, HttpStatus.OK);
     }
 
@@ -78,11 +82,5 @@ public class UserController {
         userService.deleteById(userId);
         logger.info("UserController: deleteUserById");
         return ResponseEntity.noContent().build();
-    }
-
-    private boolean updateGuestDetails(User user) {
-        logger.info("UserController: updateGuestDetails");
-        // if user email in Guests table and notification = false, !notification
-        return guestService.updateGuestDetails(user);
     }
 }

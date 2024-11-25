@@ -11,7 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GuestService implements IGuestService {
@@ -36,21 +40,7 @@ public class GuestService implements IGuestService {
         if (invitedGuest.isPresent()) {
             throw new GuestInvitationException(guestDTOIn.getEmail(), project.getId());
         }
-
         Guest guest = setGuest(guestDTOIn, user, project);
-
-        // check to see if guest is a registered user
-        //UserDTOOut guestUser = userService.findByEmail(guestDTOIn.getEmail());
-        Optional<User> guestUser = userRepo.findByEmail(guestDTOIn.getEmail());
-        // if registered, add project to user's projects
-        if (guestUser.isPresent()) {
-            ProjectUser projectUser = new ProjectUser(project, guestUser.get(), guestDTOIn.getPermissions());
-            projectUserRepo.save(projectUser);
-            guestUser.get().getProjectsSet().add(project);
-            user.getGuests().add(guest);
-        }
-
-        // if not registered, handle above on registration
 
         return guestRepo.save(guest);
     }
@@ -66,22 +56,24 @@ public class GuestService implements IGuestService {
     }
 
     @Override
-    public boolean updateGuestDetails(User user) {
-        Optional<Guest> guest = guestRepo.findByEmail(user.getEmail());
-        if(guest.isPresent() && !guest.get().isNotified()) {
-            guest.get().setNotified(true);
-            Guest savedGuest = guestRepo.save(guest.get());
-            setNewProjectUser(guest.get().getProject(), user, guest.get().getPermissions());
-            return true;
-        }
-        return false;
+    public Map<Project, Permissions> updateGuestDetails(String email) {
+        List<Guest> guestList = guestRepo.findByEmail(email);
+        return guestList.stream().filter(guest -> !guest.isNotified()).collect(Collectors.toMap(Guest::getProject, Guest::getPermissions));
     }
 
-    private void setNewProjectUser(Project project, User user, Permissions permissions) {
-        user.getProjectsSet().add(project);
-        userRepo.save(user);
-        ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(project.getId(), user.getId());
-        projectUser.setPermissions(permissions);
-        projectUserRepo.save(projectUser);
+    @Override
+    public void updateNotifiedStatus(String email) {
+        List<Guest> guestList = guestRepo.findByEmail(email);
+        guestList.forEach(guest -> {
+            guest.setNotified(true);
+            guestRepo.save(guest);
+        });
     }
+
+    @Override
+    public Set<Long> getGuestProjectIds(User user) {
+        List<Guest> guestList = guestRepo.findByEmail(user.getEmail());
+        return guestList.stream().filter(guest -> !guest.isNotified()).map(Guest::getProject).map(Project::getId).collect(Collectors.toSet());
+    }
+
 }

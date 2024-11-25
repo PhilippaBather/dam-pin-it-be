@@ -24,7 +24,7 @@ public interface TaskRepo extends CrudRepository<Task, Long> {
             " WHERE t.project_id = :projectId;", nativeQuery = true)
     Set<Task> findAllTasksByProjectId(long projectId);
 
-    Optional<Task> getTaskById(long taskId);
+    Optional<Task> findTaskById(long taskId);
 
     @Transactional
     @Modifying(clearAutomatically=true) // clears non-flushed values from the EntityManager
