@@ -102,7 +102,9 @@ public class AppConfig {
                         auth
                                 .requestMatchers("/no-csrf","/users/auth/login", "/users", "/projects/*" ,
                                         "/project/*", "project/user/*/project/*", "/tasks/user/*/project/*",
-                                        "/tasks-list/user/*/project/*", "task/*/user/*/project/*", "/guests").permitAll()
+                                        "/tasks-list/user/*/project/*", "task/*/user/*/project/*",
+                                        "/guests", "/guests/shared-projects/*", "/guests/*/shared-projects/*",
+                                        "/guests/owned-projects/*").permitAll()
                                 .anyRequest().authenticated()
                 );
 
@@ -122,7 +124,7 @@ public class AppConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         logger.info("AppConfig_webSecurityCustomizer");
         return (web) -> web.ignoring().requestMatchers(
-                "/users/auth/signup");
+                "/users/auth/signup", "/projects/owned-projects/*");
     }
 
     @Bean

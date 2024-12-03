@@ -74,5 +74,12 @@ public class ProjectController {
         projectService.deleteProjectById(projectId);
         return ResponseEntity.noContent().build();
     }
+/*
+    @GetMapping("/projects/owned-projects/{userId}")
+    public ResponseEntity<List<OwnerProjectGuestsDTOOut>> getOwnedProjectsAndGuests(@PathVariable long userId) throws UserNotFoundException {
+        User user = userService.findById(userId);
+        List<OwnerProjectGuestsDTOOut> ownedGuestProjectsSet = projectService.getGuestsOnOwnerProjects(user.getEmail(), user.getId());
+        return new ResponseEntity<>(ownedGuestProjectsSet, HttpStatus.OK);
+    }*/
 
 }

@@ -8,6 +8,7 @@ import com.batherphilippa.pin_it_app_be.model.Permissions;
 import com.batherphilippa.pin_it_app_be.model.Project;
 import com.batherphilippa.pin_it_app_be.model.User;
 import com.batherphilippa.pin_it_app_be.service.GuestService;
+import com.batherphilippa.pin_it_app_be.service.ProjectService;
 import com.batherphilippa.pin_it_app_be.service.UserService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -33,9 +34,11 @@ public class UserController {
     private final ModelMapper modelMapper;
 
     private final GuestService guestService;
+    private final ProjectService projectService;
     private final UserService userService;
-    public UserController(GuestService guestService, UserService userService, ModelMapper modelMapper) {
+    public UserController(GuestService guestService, ProjectService projectService, UserService userService, ModelMapper modelMapper) {
         this.guestService = guestService;
+        this.projectService = projectService;
         this.userService = userService;
         this.modelMapper = modelMapper;
     }
@@ -82,5 +85,17 @@ public class UserController {
         userService.deleteById(userId);
         logger.info("UserController: deleteUserById");
         return ResponseEntity.noContent().build();
+    }
+
+    // update user's project set where user has been invited as a guest
+    // update project's user set with invited user
+    private void updateProjectList(Set<Long> guestProjectIds, User user) {
+        for (Long id : guestProjectIds) {
+            Project project = projectService.getProjectGuestById(id);
+            user.getProjectsSet().add(project);
+            project.getProjectUsers().add(user);
+            projectService.save(project);
+        }
+        userService.save(user);
     }
 }

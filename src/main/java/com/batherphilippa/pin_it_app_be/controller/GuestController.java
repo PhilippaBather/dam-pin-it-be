@@ -1,6 +1,11 @@
 package com.batherphilippa.pin_it_app_be.controller;
 
 import com.batherphilippa.pin_it_app_be.dto.GuestDTOIn;
+import com.batherphilippa.pin_it_app_be.dto.OwnerProjectGuestsDTOOut;
+import com.batherphilippa.pin_it_app_be.dto.ProjectDTOOut;
+import com.batherphilippa.pin_it_app_be.dto.SharedProjectsDTOOut;
+import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
+import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.Email;
 import com.batherphilippa.pin_it_app_be.model.Guest;
 import com.batherphilippa.pin_it_app_be.model.Project;
@@ -14,10 +19,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
+import java.util.Set;
 
 @RestController
 public class GuestController {
@@ -48,6 +54,27 @@ public class GuestController {
         sendEmail(guestDTOIn, user, project);
 
         return new ResponseEntity<>(savedGuest, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/guests/shared-projects/{userId}")
+    public ResponseEntity<Set<SharedProjectsDTOOut>> getSharedProjects(@PathVariable long userId) throws UserNotFoundException {
+        User user = userService.findById(userId);
+        Set<SharedProjectsDTOOut> sharedProjectsSet = guestService.getSharedProjects(user.getEmail());
+        return new ResponseEntity<>(sharedProjectsSet, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/guests/{userId}/shared-projects/{projectId}")
+    public ResponseEntity<Void> removeSharedProject(@PathVariable long projectId, @PathVariable long userId) throws UserNotFoundException, ProjectNotFoundException {
+        User user = userService.findById(userId);
+        guestService.deleteGuest(projectId, user);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/guests/owned-projects/{userId}")
+    public ResponseEntity<List<ProjectDTOOut>> getOwnedProjects(@PathVariable long userId) throws UserNotFoundException {
+        User user = userService.findById(userId);
+        List<ProjectDTOOut> ownerGuestProjects = guestService.getOwnedProjects(user.getId());
+        return new ResponseEntity<>(ownerGuestProjects, HttpStatus.OK);
     }
 
     private void sendEmail(GuestDTOIn guestDTOIn, User user, Project project) throws SendFailedException {
