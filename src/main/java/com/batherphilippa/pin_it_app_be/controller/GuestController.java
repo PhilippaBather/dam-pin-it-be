@@ -4,12 +4,10 @@ import com.batherphilippa.pin_it_app_be.dto.GuestDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.OwnerProjectGuestsDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.ProjectDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.SharedProjectsDTOOut;
+import com.batherphilippa.pin_it_app_be.exceptions.GuestNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
-import com.batherphilippa.pin_it_app_be.model.Email;
-import com.batherphilippa.pin_it_app_be.model.Guest;
-import com.batherphilippa.pin_it_app_be.model.Project;
-import com.batherphilippa.pin_it_app_be.model.User;
+import com.batherphilippa.pin_it_app_be.model.*;
 import com.batherphilippa.pin_it_app_be.service.EmailService;
 import com.batherphilippa.pin_it_app_be.service.GuestService;
 import com.batherphilippa.pin_it_app_be.service.ProjectService;
@@ -62,7 +60,6 @@ public class GuestController {
         Set<SharedProjectsDTOOut> sharedProjectsSet = guestService.getSharedProjects(user.getEmail());
         return new ResponseEntity<>(sharedProjectsSet, HttpStatus.OK);
     }
-
     @DeleteMapping("/guests/{userId}/shared-projects/{projectId}")
     public ResponseEntity<Void> removeSharedProject(@PathVariable long projectId, @PathVariable long userId) throws UserNotFoundException, ProjectNotFoundException {
         User user = userService.findById(userId);
@@ -71,10 +68,21 @@ public class GuestController {
     }
 
     @GetMapping("/guests/owned-projects/{userId}")
-    public ResponseEntity<List<ProjectDTOOut>> getOwnedProjects(@PathVariable long userId) throws UserNotFoundException {
+    public ResponseEntity<List<ProjectDTOOut>> getOwnedProjects(@PathVariable long userId) {
         User user = userService.findById(userId);
         List<ProjectDTOOut> ownerGuestProjects = guestService.getOwnedProjects(user.getId());
         return new ResponseEntity<>(ownerGuestProjects, HttpStatus.OK);
+    }
+
+    @PutMapping("/guests/owned-projects/{projectId}")
+    public ResponseEntity<Guest> updateGuestPermissions(@PathVariable long projectId, @Valid @RequestBody GuestDTOIn guestDTOIn) {
+        Guest updatedGuest = guestService.updateGuestPermissions(projectId, guestDTOIn);
+        return new ResponseEntity<>(updatedGuest, HttpStatus.OK);
+    }
+    @DeleteMapping("/guests/owned-projects/guest/{guestEmail}/project{projectId}")
+    public ResponseEntity<Void> deleteGuestFromOwnedProject(@PathVariable String guestEmail, @PathVariable long projectId) {
+        guestService.deleteGuest(projectId, guestEmail);
+        return ResponseEntity.noContent().build();
     }
 
     private void sendEmail(GuestDTOIn guestDTOIn, User user, Project project) throws SendFailedException {
