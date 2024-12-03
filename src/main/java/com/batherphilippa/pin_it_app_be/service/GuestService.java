@@ -6,10 +6,14 @@ import com.batherphilippa.pin_it_app_be.dto.GuestDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.ProjectDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.SharedProjectsDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.GuestInvitationException;
+import com.batherphilippa.pin_it_app_be.exceptions.GuestNotFoundException;
+import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
+import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.*;
 import com.batherphilippa.pin_it_app_be.repository.GuestRepo;
 import com.batherphilippa.pin_it_app_be.repository.ProjectRepo;
 import com.batherphilippa.pin_it_app_be.repository.ProjectUserRepo;
+import com.batherphilippa.pin_it_app_be.repository.UserRepo;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +27,16 @@ public class GuestService implements IGuestService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);
     private final ModelMapper modelMapper;
-
     private final GuestRepo guestRepo;
     private final ProjectRepo projectRepo;
     private final ProjectUserRepo projectUserRepo;
+    private final UserRepo userRepo;
 
-    public GuestService(GuestRepo guestRepo, ProjectRepo projectRepo, ProjectUserRepo projectUserRepo, ModelMapper modelMapper) {
+    public GuestService(GuestRepo guestRepo, ProjectRepo projectRepo, ProjectUserRepo projectUserRepo, UserRepo userRepo, ModelMapper modelMapper) {
         this.guestRepo = guestRepo;
         this.projectRepo = projectRepo;
         this.projectUserRepo = projectUserRepo;
+        this.userRepo = userRepo;
         this.modelMapper = modelMapper;
     }
 
@@ -100,9 +105,31 @@ public class GuestService implements IGuestService {
     }
 
     @Override
-    public void deleteGuest(long projectId, User user) {
-        guestRepo.deleteByProjectIdAndGuestEmail(projectId, user.getEmail());
-        projectUserRepo.deleteAllByUserIdAndProjectId(user.getId(), projectId);
+    public Guest updateGuestPermissions(long projectId, GuestDTOIn guestDTOIn) throws ProjectNotFoundException, GuestNotFoundException, UserNotFoundException {
+        Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
+        Guest guest = guestRepo.findByEmailAndProjectId(guestDTOIn.getEmail(), project.getId()).orElseThrow(() -> new GuestNotFoundException(guestDTOIn.getEmail()));
+        guest.setPermissions(guestDTOIn.getPermissions());
+        Guest updatedGuest = guestRepo.save(guest);
+        User user = userRepo.findByEmail(updatedGuest.getEmail()).orElseThrow(() -> new UserNotFoundException(guestDTOIn.getEmail()));
+        if (user != null) {
+            ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(project.getId(), project.getId());
+            projectUser.setPermissions(guest.getPermissions());
+        }
+        return updatedGuest;
+    }
+
+    @Override
+    public void deleteGuest(long projectId, User user) throws ProjectNotFoundException {
+        Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
+        guestRepo.deleteByProjectIdAndGuestEmail(project.getId(), user.getEmail());
+        projectUserRepo.deleteByUserIdAndProjectId(user.getId(), projectId);
+    }
+    @Override
+    public void deleteGuest(long projectId, String guestEmail) throws ProjectNotFoundException {
+        Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
+        guestRepo.deleteByProjectIdAndGuestEmail(project.getId(), guestEmail);
+        User user = userRepo.findByEmail(guestEmail).orElseThrow(() -> new UserNotFoundException(guestEmail));
+        projectUserRepo.deleteByUserIdAndProjectId(user.getId(), projectId);
     }
 
     @Override
