@@ -15,6 +15,7 @@ public interface IUserService {
     Set<UserDTOOut> findAll();
     User findById(long userId) throws UserNotFoundException;
     User findByEmail(String email) throws UserNotFoundException;
+    User save(User user) throws UserNotFoundException;
     UserDTOOut updateById(long userId, UserDTOIn userDTOIn) throws UserNotFoundException;
     void deleteById(long userId) throws UserNotFoundException;
 }

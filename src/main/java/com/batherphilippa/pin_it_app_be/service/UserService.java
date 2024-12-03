@@ -58,6 +58,11 @@ public class UserService implements IUserService{
     }
 
     @Override
+    public User save(User user) throws UserNotFoundException {
+        return userRepo.save(user);
+    }
+
+    @Override
     public UserDTOOut updateById(long userId, UserDTOIn userDTOIn) throws UserNotFoundException {
         User user = userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         modelMapper.map(userDTOIn, user);
@@ -92,19 +97,22 @@ public class UserService implements IUserService{
         return usersDTOOutSet;
     }
 
-    public Map<Project, Permissions>  updateGuestProjects(User user) {
+    public Map<Project, Permissions> updateGuestProjects(User user) {
 
         // get projects on which user is a guest and their permissions Map<Long,Permissions>
         Map<Project, Permissions> guestProjects = guestService.updateGuestDetails(user.getEmail());
 
         for (Map.Entry<Project, Permissions> entry : guestProjects.entrySet()) {
             user.getProjectsSet().add(entry.getKey());
+            //entry.getKey().getProjectUsers().add(user);
+            //projectService.save(entry.getKey());
         }
         User savedUser = userRepo.save(user);
 
         for (Map.Entry<Project, Permissions> entry : guestProjects.entrySet()) {
             ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(entry.getKey().getId(), user.getId());
-            projectUser.setPermissions(entry.getValue());
+            projectUser.setPermissions(Permissions.EDITOR);
+            projectUserRepo.save(projectUser);
         }
 
         // set notified as true in the guest
