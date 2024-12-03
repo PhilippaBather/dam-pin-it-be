@@ -102,6 +102,15 @@ public class GlobalExceptionHandler {
         return new Response(ErrorType.TASK_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.TASK_NOT_FOUND_EXCEPTION.getCode(), ErrorType.TASK_NOT_FOUND_EXCEPTION.getHttpStatus(), tnfe.getMessage());
     }
 
+    // 404 error
+    @ExceptionHandler(value = GuestNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(GuestNotFoundException gnfe) {
+        logger.info("GlobalExceptionHandle: Custom exception: GUEST_NOT_FOUND");
+        return new Response(ErrorType.GUEST_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.GUEST_NOT_FOUND_EXCEPTION.getCode(), ErrorType.GUEST_NOT_FOUND_EXCEPTION.getHttpStatus(), gnfe.getMessage());
+    }
+
     // 409 error
     @ExceptionHandler(value = UserExistsException.class)
     @ResponseBody

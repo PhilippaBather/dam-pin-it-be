@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 public enum ErrorType {
 
     GUEST_PROJECT_EXISTS_EXCEPTION("409", "GUEST ALREADY EXISTS FOR PROJECT", new Timestamp(System.currentTimeMillis())),
+    GUEST_NOT_FOUND_EXCEPTION("404", "GUEST NOT FOUND ON PROJECT", new Timestamp(System.currentTimeMillis())),
     PROJECT_NOT_FOUND_EXCEPTION("404", "PROJECT NOT FOUND", new Timestamp(System.currentTimeMillis())),
     TASK_NOT_FOUND_EXCEPTION("404", "TASK NOT FOUND", new Timestamp(System.currentTimeMillis())),
     UNAUTHORISED_EXCEPTION("404", "UNAUTHORISED EXCEPTION", new Timestamp(System.currentTimeMillis())),
