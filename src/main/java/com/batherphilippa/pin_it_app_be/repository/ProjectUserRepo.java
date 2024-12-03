@@ -43,4 +43,9 @@ public interface ProjectUserRepo extends CrudRepository<ProjectUser, Long> {
             " WHERE pu.user_id = :userId;", nativeQuery = true)
     void deleteAllByUserId(long userId) throws UserNotFoundException;
 
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM project_user pu " +
+            "WHERE pu.user_id = :userId AND pu.project_id = :projectId;", nativeQuery = true)
+    void deleteAllByUserIdAndProjectId(long userId, long projectId);
 }
