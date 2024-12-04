@@ -126,6 +126,7 @@ public class GuestService implements IGuestService {
     }
     @Override
     public void deleteGuest(long projectId, String guestEmail) throws ProjectNotFoundException {
+        logger.info("GuestService: deleteGuest");
         Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
         guestRepo.deleteByProjectIdAndGuestEmail(project.getId(), guestEmail);
         User user = userRepo.findByEmail(guestEmail).orElseThrow(() -> new UserNotFoundException(guestEmail));

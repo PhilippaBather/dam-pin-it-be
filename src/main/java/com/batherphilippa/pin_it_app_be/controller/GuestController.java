@@ -1,5 +1,6 @@
 package com.batherphilippa.pin_it_app_be.controller;
 
+import com.batherphilippa.pin_it_app_be.config.AppConfig;
 import com.batherphilippa.pin_it_app_be.dto.GuestDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.OwnerProjectGuestsDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.ProjectDTOOut;
@@ -14,6 +15,8 @@ import com.batherphilippa.pin_it_app_be.service.ProjectService;
 import com.batherphilippa.pin_it_app_be.service.UserService;
 import jakarta.mail.SendFailedException;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,7 @@ import java.util.Set;
 
 @RestController
 public class GuestController {
+    private static final Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
     private final String SENDER;
     private final String LOCAL_HOST;
@@ -79,8 +83,9 @@ public class GuestController {
         Guest updatedGuest = guestService.updateGuestPermissions(projectId, guestDTOIn);
         return new ResponseEntity<>(updatedGuest, HttpStatus.OK);
     }
-    @DeleteMapping("/guests/owned-projects/guest/{guestEmail}/project{projectId}")
+    @DeleteMapping("/guests/owned-projects/guest/{guestEmail}/project/{projectId}")
     public ResponseEntity<Void> deleteGuestFromOwnedProject(@PathVariable String guestEmail, @PathVariable long projectId) {
+        logger.info("GuestController: deleteGuestFromOwnedProject");
         guestService.deleteGuest(projectId, guestEmail);
         return ResponseEntity.noContent().build();
     }
