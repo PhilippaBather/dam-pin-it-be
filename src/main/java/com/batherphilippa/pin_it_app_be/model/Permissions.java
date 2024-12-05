@@ -5,25 +5,29 @@ package com.batherphilippa.pin_it_app_be.model;
  */
 public enum Permissions {
 
-    OWNER("OWNER_CRUD", 0),  // create, read, write, delete
-    EDITOR_RWD("EDITOR_RW", 2), // read, write, delete tasks
-    EDITOR_RW("EDITOR_RWD", 3), // read, write tasks
-    VIEWER("VIEWER", 4) ;// read
+    OWNER("OWNER_CRUD", 0, "Owner"),  // create, read, write, delete
+    EDITOR_RWD("EDITOR_RWD", 1, "Editor with read, write, and delete permissions"), // read, write, delete tasks
+    EDITOR_RW("EDITOR_RW", 2, "Editor with read and write permissions"), // read, write tasks
+    VIEWER("VIEWER", 3, "Participiant with read only permissions") ;// read
 
-    private final String permissionsName;
+    private final String permissionsIdentifier;
     private final int permissionsNum;
+    private final String permissionsDescription;
 
-    Permissions(String permissionsName, int permissionsNum) {
-        this.permissionsName = permissionsName;
+    Permissions(String permissionsIdentifier, int permissionsNum, String permissionsDescription) {
+        this.permissionsIdentifier = permissionsIdentifier;
         this.permissionsNum = permissionsNum;
+        this.permissionsDescription = permissionsDescription;
     }
-    public String getPermissionsName() {
-        return this.permissionsName;
+    public String getPermissionsIdentifier() {
+        return this.permissionsIdentifier;
     }
 
     public int getPermissionsNum() {
         return this.permissionsNum;
     }
+
+    public String getPermissionsDescription() { return this.permissionsDescription; }
 
     public static Permissions setPermissionsByNum(int num) {
         return switch(num) {
