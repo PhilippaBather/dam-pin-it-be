@@ -6,9 +6,9 @@ package com.batherphilippa.pin_it_app_be.model;
 public enum Permissions {
 
     OWNER("OWNER_CRUD", 0),  // create, read, write, delete
-    EDITOR_RW("EDITOR_RW", 1), // read, write, delete tasks
-    EDITOR_RWD("EDITOR_RWD", 2),
-    VIEWER("VIEWER", 3) ;// read
+    EDITOR_RWD("EDITOR_RW", 2), // read, write, delete tasks
+    EDITOR_RW("EDITOR_RWD", 3), // read, write tasks
+    VIEWER("VIEWER", 4) ;// read
 
     private final String permissionsName;
     private final int permissionsNum;
@@ -17,7 +17,6 @@ public enum Permissions {
         this.permissionsName = permissionsName;
         this.permissionsNum = permissionsNum;
     }
-
     public String getPermissionsName() {
         return this.permissionsName;
     }
@@ -29,8 +28,8 @@ public enum Permissions {
     public static Permissions setPermissionsByNum(int num) {
         return switch(num) {
             case 0 -> Permissions.OWNER;
-            case 1 -> Permissions.EDITOR_RW;
-            case 2 -> Permissions.EDITOR_RWD;
+            case 1 -> Permissions.EDITOR_RWD;
+            case 2 -> Permissions.EDITOR_RW;
             default -> Permissions.VIEWER;
         };
     }
