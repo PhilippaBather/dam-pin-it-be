@@ -105,17 +105,27 @@ public class GuestService implements IGuestService {
     }
 
     @Override
-    public Guest updateGuestPermissions(GuestDTOIn guestDTOIn) throws ProjectNotFoundException, GuestNotFoundException, UserNotFoundException {
+    public GuestDTOOut updateGuestPermissions(GuestDTOIn guestDTOIn) throws ProjectNotFoundException, GuestNotFoundException, UserNotFoundException {
         logger.info("GuestService: updateGuestPermissions");
         Project project = projectRepo.findById(guestDTOIn.getProjectId()).orElseThrow(() -> new ProjectNotFoundException(guestDTOIn.getProjectId()));
         guestRepo.updateGuestPermissions(guestDTOIn.getPermissions(), guestDTOIn.getEmail(), guestDTOIn.getProjectId());
+        updateProjectUserPermissions(guestDTOIn, project.getId());
+        return buildGuestDTO(guestDTOIn.getEmail(), project.getTitle(), project.getId());
+    }
+    private void updateProjectUserPermissions(GuestDTOIn guestDTOIn, long projectId) {
         User user = userRepo.findByEmail(guestDTOIn.getEmail()).orElseThrow(() -> new UserNotFoundException(guestDTOIn.getEmail()));
-        ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(project.getId(), project.getId());
+        ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(projectId, user.getId());
         if (user != null && projectUser != null) {
             projectUser.setPermissions(guestDTOIn.getPermissions());
         }
-        Guest guest = guestRepo.findByEmailAndProjectId(guestDTOIn.getEmail(), project.getId()).orElseThrow(() -> new GuestNotFoundException(guestDTOIn.getEmail()));
-        return guest;
+    }
+
+    private GuestDTOOut buildGuestDTO(String guestEmail, String projectTitle, long projectId) {
+        GuestDTOOut guestDTOOut = new GuestDTOOut();
+        Guest guest = guestRepo.findByEmailAndProjectId(guestEmail, projectId).orElseThrow(() -> new GuestNotFoundException(guestEmail));
+        modelMapper.map(guest, guestDTOOut);
+        guestDTOOut.setProjectTitle(projectTitle);
+        return guestDTOOut;
     }
 
     @Override
