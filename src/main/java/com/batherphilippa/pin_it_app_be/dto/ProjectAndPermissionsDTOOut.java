@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ProjectAndPermissionsDTOOut {
 
-    private long id;
+    private long projectId;
     private String title;
     private String description;
     private LocalDate deadline;
