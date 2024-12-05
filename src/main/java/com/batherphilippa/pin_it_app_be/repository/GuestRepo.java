@@ -1,6 +1,7 @@
 package com.batherphilippa.pin_it_app_be.repository;
 
 import com.batherphilippa.pin_it_app_be.model.Guest;
+import com.batherphilippa.pin_it_app_be.model.Permissions;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -30,17 +31,30 @@ public interface GuestRepo  extends CrudRepository<Guest, Long> {
                     "AND g.email = :email;", nativeQuery = true)
     Set<Guest> findSharedProjectsByGuestEmail(String email);
 
-    @Transactional
-    @Modifying
-    @Query(value = "DELETE FROM guests as g " +
-                   "WHERE g.project_id = :projectId AND g.email = :email;", nativeQuery = true)
-    void deleteByProjectIdAndGuestEmail(long projectId, String email);
-
     @Query(value =  "SELECT " +
             "g.guest_id, g.email, g.notified, g.permissions, g.project_id, g.user_id, p.title, p.deadline, p.project_status " +
             "from guests as g " +
             "inner join projects as p on p.project_id = g.project_id " +
             "where g.user_id = :userId;" , nativeQuery = true)
     List<Guest> findOwnedProjectsWithGuests(long userId);
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM guests as g " +
+                   "WHERE g.project_id = :projectId", nativeQuery = true)
+    void deleteByProjectId(long projectId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM guests as g " +
+                   "WHERE g.project_id = :projectId AND g.email = :email;", nativeQuery = true)
+    void deleteByProjectIdAndGuestEmail(long projectId, String email);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE guests as g " +
+                   "SET g.permissions = :permissions " +
+                   "WHERE g.email = :email AND g.project_id = :id;", nativeQuery = true)
+    void updateGuestPermissions(Permissions permissions, String email, long id);
+
 
 }

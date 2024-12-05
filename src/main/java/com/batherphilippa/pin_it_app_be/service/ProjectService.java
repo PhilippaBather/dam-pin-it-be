@@ -1,14 +1,10 @@
 package com.batherphilippa.pin_it_app_be.service;
 
 import com.batherphilippa.pin_it_app_be.dto.*;
-import com.batherphilippa.pin_it_app_be.exceptions.GuestInvitationException;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.*;
-import com.batherphilippa.pin_it_app_be.repository.ProjectRepo;
-import com.batherphilippa.pin_it_app_be.repository.ProjectUserRepo;
-import com.batherphilippa.pin_it_app_be.repository.TaskRepo;
-import com.batherphilippa.pin_it_app_be.repository.UserRepo;
+import com.batherphilippa.pin_it_app_be.repository.*;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +23,13 @@ public class ProjectService implements IProjectService {
 
     private final ProjectRepo projectRepo;
     private final ProjectUserRepo projectUserRepo;
+    private final GuestRepo guestRepo;
     private final TaskRepo taskRepo;
     private final UserRepo userRepo;
     private final ModelMapper modelMapper;
 
-    public ProjectService(ProjectRepo projectRepo, ProjectUserRepo projectUserRepo, TaskRepo taskRepo, UserRepo userRepo, ModelMapper modelMapper) {
+    public ProjectService(GuestRepo guestRepo, ProjectRepo projectRepo, ProjectUserRepo projectUserRepo, TaskRepo taskRepo, UserRepo userRepo, ModelMapper modelMapper) {
+        this.guestRepo = guestRepo;
         this.projectRepo = projectRepo;
         this.projectUserRepo = projectUserRepo;
         this.taskRepo = taskRepo;
@@ -130,7 +128,9 @@ public class ProjectService implements IProjectService {
         projectUserRepo.deleteAllByProjectId(project.getId());
         LOGGER.info("ProjectService: deleteProject by Id: projects removed from Project_User join table");
         // delete projects in Project table
-        projectRepo.deleteAllByProjectId(project.getId());
+        //projectRepo.deleteAllByProjectId(project.getId());
+        guestRepo.deleteByProjectId(projectId);
+        projectRepo.deleteById(project.getId());
         LOGGER.info("ProjectService: deleteProject by Id: projects removed from Project table");
     }
 

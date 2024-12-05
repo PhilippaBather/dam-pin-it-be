@@ -78,9 +78,10 @@ public class GuestController {
         return new ResponseEntity<>(ownerGuestProjects, HttpStatus.OK);
     }
 
-    @PutMapping("/guests/owned-projects/{projectId}")
-    public ResponseEntity<Guest> updateGuestPermissions(@PathVariable long projectId, @Valid @RequestBody GuestDTOIn guestDTOIn) {
-        Guest updatedGuest = guestService.updateGuestPermissions(projectId, guestDTOIn);
+    @PutMapping("/guests/owned-projects")
+    public ResponseEntity<Guest> updateGuestPermissions(@Valid @RequestBody GuestDTOIn guestDTOIn) {
+        logger.info("GuestController: updateGuestPermissions");
+        Guest updatedGuest = guestService.updateGuestPermissions(guestDTOIn);
         return new ResponseEntity<>(updatedGuest, HttpStatus.OK);
     }
     @DeleteMapping("/guests/owned-projects/guest/{guestEmail}/project/{projectId}")

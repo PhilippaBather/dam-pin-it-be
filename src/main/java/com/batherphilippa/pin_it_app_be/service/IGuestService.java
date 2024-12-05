@@ -23,7 +23,7 @@ public interface IGuestService {
     Set<Long> getGuestProjectIds(User user) throws UserNotFoundException;
     Set<SharedProjectsDTOOut> getSharedProjects(String email);
     List<ProjectDTOOut> getOwnedProjects(long userId) throws UserNotFoundException;
-    Guest updateGuestPermissions(long projectId, GuestDTOIn guestDTOIn) throws ProjectNotFoundException, GuestNotFoundException, UserNotFoundException;
+    Guest updateGuestPermissions(GuestDTOIn guestDTOIn) throws ProjectNotFoundException, GuestNotFoundException, UserNotFoundException;
     void deleteGuest(long projectId, User user) throws ProjectNotFoundException;
     void deleteGuest(long projectId, String guestEmail) throws ProjectNotFoundException, GuestNotFoundException;
 }

@@ -105,17 +105,17 @@ public class GuestService implements IGuestService {
     }
 
     @Override
-    public Guest updateGuestPermissions(long projectId, GuestDTOIn guestDTOIn) throws ProjectNotFoundException, GuestNotFoundException, UserNotFoundException {
-        Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
-        Guest guest = guestRepo.findByEmailAndProjectId(guestDTOIn.getEmail(), project.getId()).orElseThrow(() -> new GuestNotFoundException(guestDTOIn.getEmail()));
-        guest.setPermissions(guestDTOIn.getPermissions());
-        Guest updatedGuest = guestRepo.save(guest);
-        User user = userRepo.findByEmail(updatedGuest.getEmail()).orElseThrow(() -> new UserNotFoundException(guestDTOIn.getEmail()));
-        if (user != null) {
-            ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(project.getId(), project.getId());
-            projectUser.setPermissions(guest.getPermissions());
+    public Guest updateGuestPermissions(GuestDTOIn guestDTOIn) throws ProjectNotFoundException, GuestNotFoundException, UserNotFoundException {
+        logger.info("GuestService: updateGuestPermissions");
+        Project project = projectRepo.findById(guestDTOIn.getProjectId()).orElseThrow(() -> new ProjectNotFoundException(guestDTOIn.getProjectId()));
+        guestRepo.updateGuestPermissions(guestDTOIn.getPermissions(), guestDTOIn.getEmail(), guestDTOIn.getProjectId());
+        User user = userRepo.findByEmail(guestDTOIn.getEmail()).orElseThrow(() -> new UserNotFoundException(guestDTOIn.getEmail()));
+        ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(project.getId(), project.getId());
+        if (user != null && projectUser != null) {
+            projectUser.setPermissions(guestDTOIn.getPermissions());
         }
-        return updatedGuest;
+        Guest guest = guestRepo.findByEmailAndProjectId(guestDTOIn.getEmail(), project.getId()).orElseThrow(() -> new GuestNotFoundException(guestDTOIn.getEmail()));
+        return guest;
     }
 
     @Override

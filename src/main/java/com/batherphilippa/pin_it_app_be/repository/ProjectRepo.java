@@ -26,11 +26,11 @@ public interface ProjectRepo extends CrudRepository<Project, Long> {
             " WHERE pu.project_id = :projectId;", nativeQuery = true)
     Optional<Project> findByProjectId(long projectId);
 
-    @Transactional
+    /*@Transactional
     @Modifying
     @Query(value = "DELETE FROM projects p " +
                     " WHERE p.project_id = :projectId;", nativeQuery = true)
-    void deleteAllByProjectId(long projectId);
+    void deleteAllByProjectId(long projectId);*/
 
     @Transactional
     @Modifying
