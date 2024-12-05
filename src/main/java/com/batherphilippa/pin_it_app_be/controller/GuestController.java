@@ -2,13 +2,15 @@ package com.batherphilippa.pin_it_app_be.controller;
 
 import com.batherphilippa.pin_it_app_be.config.AppConfig;
 import com.batherphilippa.pin_it_app_be.dto.GuestDTOIn;
-import com.batherphilippa.pin_it_app_be.dto.OwnerProjectGuestsDTOOut;
+import com.batherphilippa.pin_it_app_be.dto.GuestDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.ProjectDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.SharedProjectsDTOOut;
-import com.batherphilippa.pin_it_app_be.exceptions.GuestNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
-import com.batherphilippa.pin_it_app_be.model.*;
+import com.batherphilippa.pin_it_app_be.model.Email;
+import com.batherphilippa.pin_it_app_be.model.Guest;
+import com.batherphilippa.pin_it_app_be.model.Project;
+import com.batherphilippa.pin_it_app_be.model.User;
 import com.batherphilippa.pin_it_app_be.service.EmailService;
 import com.batherphilippa.pin_it_app_be.service.GuestService;
 import com.batherphilippa.pin_it_app_be.service.ProjectService;
@@ -48,13 +50,15 @@ public class GuestController {
 
     @PostMapping("/guests")
     public ResponseEntity<Guest> handleGuestInvitation(@Valid @RequestBody GuestDTOIn guestDTOIn) throws SendFailedException, HttpClientErrorException.UnprocessableEntity {
+        // save guest
         User user = userService.findById(guestDTOIn.getUserId());
         Project project = projectService.getProjectByIdForGuest(guestDTOIn.getProjectId(), guestDTOIn.getUserId());
-
         Guest savedGuest = this.guestService.saveGuest(guestDTOIn, user, project);
 
-        sendEmail(guestDTOIn, user, project);
-
+        // notify user via email
+        final String EMAIL_SUBJECT = "¡Pin-it App! Project Invitation";
+        String body = constructEmailBodyInvite(guestDTOIn.getBody(), user.getForename(), user.getSurname(), project.getTitle(), savedGuest.getPermissions().getPermissionsDescription());
+        sendEmail(guestDTOIn.getEmail(), EMAIL_SUBJECT, body);
         return new ResponseEntity<>(savedGuest, HttpStatus.CREATED);
     }
 
@@ -79,9 +83,12 @@ public class GuestController {
     }
 
     @PutMapping("/guests/owned-projects")
-    public ResponseEntity<Guest> updateGuestPermissions(@Valid @RequestBody GuestDTOIn guestDTOIn) {
+    public ResponseEntity<GuestDTOOut> updateGuestPermissions(@Valid @RequestBody GuestDTOIn guestDTOIn) throws SendFailedException {
         logger.info("GuestController: updateGuestPermissions");
-        Guest updatedGuest = guestService.updateGuestPermissions(guestDTOIn);
+        final String EMAIL_SUBJECT = "¡Pin-it App! Project Permissions Update";
+        GuestDTOOut updatedGuest = guestService.updateGuestPermissions(guestDTOIn);
+        String body = constructEmailBodyUpdate(guestDTOIn.getBody(), updatedGuest.getPermissions().getPermissionsDescription(), updatedGuest.getProjectTitle());
+        sendEmail(updatedGuest.getEmail(), EMAIL_SUBJECT, body);
         return new ResponseEntity<>(updatedGuest, HttpStatus.OK);
     }
     @DeleteMapping("/guests/owned-projects/guest/{guestEmail}/project/{projectId}")
@@ -91,18 +98,24 @@ public class GuestController {
         return ResponseEntity.noContent().build();
     }
 
-    private void sendEmail(GuestDTOIn guestDTOIn, User user, Project project) throws SendFailedException {
-        final String EMAIL_SUBJECT = "¡Pin-it App! Project Invitation";
-        String body = constructBody(guestDTOIn, user.getForename(), user.getSurname(), project.getTitle());
-        Email email = new Email(guestDTOIn.getEmail(), SENDER, EMAIL_SUBJECT, body);
+    private void sendEmail(String recipient, String subject, String body) throws SendFailedException {
+        Email email = new Email(recipient, SENDER, subject, body);
         this.emailService.sendEmail(email);
     }
-    private String constructBody(GuestDTOIn guest, String forename, String surname, String projectTitle) {
+    private String constructEmailBodyInvite(String body, String forename, String surname, String projectTitle, String permissions) {
         String username = forename.concat(" ").concat(surname);
-        String msg = String.format("%s has shared the project %s with you.  Register or login to get started on the project. \n%s", username, projectTitle, LOCAL_HOST);
+        String msg = String.format("%s has granted you %s on the project '%s'.  Register or login to get started on the project at %s", username, permissions.toLowerCase(), projectTitle, LOCAL_HOST);
+        return constructBody(body, msg);
+    }
 
-        if (guest.getBody().trim().length() > 0) {
-            return String.format("%s\n\n%s", msg, guest.getBody().trim());
+    private String constructEmailBodyUpdate(String body, String permissions, String projectTitle) {
+        String msg = String.format("Your permissions have been updated to %s on project '%s'.  Log in to continue working on the project at %s", permissions.toLowerCase(), projectTitle, LOCAL_HOST);
+        return constructBody(body, msg);
+    }
+
+    private String constructBody(String body, String msg) {
+        if(body.trim().length() > 0) {
+            return String.format("%s\n\n%s", msg, body.trim());
         }
         return msg;
     }
