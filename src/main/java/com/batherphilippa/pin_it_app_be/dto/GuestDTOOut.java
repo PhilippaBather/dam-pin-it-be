@@ -15,4 +15,5 @@ public class GuestDTOOut {
     private Permissions permissions;
     private long userId;
     private long projectId;
+    private String projectTitle;
 }
