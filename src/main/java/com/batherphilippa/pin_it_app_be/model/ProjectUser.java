@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class ProjectUser {
 
     @EmbeddedId
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private ProjectUserKey id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,7 +32,6 @@ public class ProjectUser {
     // TODO: enum validation
     @Column(name = "permissions")
     private Permissions permissions;
-
 
     public ProjectUser(Project project, User user, Permissions permissions) {
         this.project = project;

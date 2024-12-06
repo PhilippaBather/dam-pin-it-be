@@ -35,7 +35,7 @@ public class User {
 
     @NotBlank(message = VALIDATION_SURNAME_NOT_BLANK)
     @Size(min = 2, max = 100, message = VALIDATION_SURNAME_SIZE)
-    @Column(name = "surname)")
+    @Column(name = "surname")
     private String surname;
 
     @NotBlank(message = VALIDATION_EMAIL_NOT_BLANK)
@@ -48,7 +48,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Guest> guests = new HashSet<>();
+    private Set<Guest> guestSet = new HashSet<>();
 
     @ManyToMany
     @JoinTable(

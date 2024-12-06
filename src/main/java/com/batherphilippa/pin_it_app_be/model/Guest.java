@@ -23,7 +23,7 @@ public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "guest_id", updatable = false, nullable = false)
-    private long id;
+    private long guestId;
 
     @NotBlank(message = VALIDATION_EMAIL_NOT_BLANK)
     @Email
@@ -32,6 +32,9 @@ public class Guest {
 
     @Column(name = "permissions")
     private Permissions permissions;
+
+    @Column(name = "notified")
+    private boolean isNotified = false;
 
     @ManyToOne
     @JsonBackReference(value = "guest_projects")

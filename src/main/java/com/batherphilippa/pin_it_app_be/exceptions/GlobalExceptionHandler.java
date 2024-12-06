@@ -102,18 +102,39 @@ public class GlobalExceptionHandler {
         return new Response(ErrorType.TASK_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.TASK_NOT_FOUND_EXCEPTION.getCode(), ErrorType.TASK_NOT_FOUND_EXCEPTION.getHttpStatus(), tnfe.getMessage());
     }
 
+    // 404 error
+    @ExceptionHandler(value = GuestNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(GuestNotFoundException gnfe) {
+        logger.info("GlobalExceptionHandle: Custom exception: GUEST_NOT_FOUND");
+        return new Response(ErrorType.GUEST_NOT_FOUND_EXCEPTION.getTimestamp(), ErrorType.GUEST_NOT_FOUND_EXCEPTION.getCode(), ErrorType.GUEST_NOT_FOUND_EXCEPTION.getHttpStatus(), gnfe.getMessage());
+    }
+
     // 409 error
     @ExceptionHandler(value = UserExistsException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response handleException(UserExistsException uee){
-        logger.info("GlobalExceptionHandle: Custom exception: USER_NOT_FOUND");
+        logger.info("GlobalExceptionHandle: Custom exception: USER_EXISTS");
         return new Response(ErrorType.USER_EXISTS_EXCEPTION.getTimestamp(), ErrorType.USER_EXISTS_EXCEPTION.getCode(), ErrorType.USER_EXISTS_EXCEPTION.getHttpStatus(), uee.getMessage());
     }
+
+    // 406 error
     @ResponseBody
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public String handleHttpMediaTypeNotAcceptableException() {
-        return "acceptable MIME type:" + MediaType.APPLICATION_JSON_VALUE;
+        return "unacceptable MIME type:" + MediaType.APPLICATION_JSON_VALUE;
     }
+
+    // 409 error
+    @ExceptionHandler(value = GuestInvitationException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Response handleException(GuestInvitationException gie) {
+        logger.info("GlobalExceptionHandle: Custom exception: GUEST_EXISTS");
+        return new Response(ErrorType.GUEST_PROJECT_EXISTS_EXCEPTION.getTimestamp(), ErrorType.GUEST_PROJECT_EXISTS_EXCEPTION.getCode(), ErrorType.GUEST_PROJECT_EXISTS_EXCEPTION.getHttpStatus(), gie.getMessage());
+    }
+
 
 }

@@ -4,7 +4,6 @@ import com.batherphilippa.pin_it_app_be.dto.TaskDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.TaskUpdatedDTOIn;
 import com.batherphilippa.pin_it_app_be.exceptions.TaskNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.Task;
-import com.batherphilippa.pin_it_app_be.model.TaskStatus;
 import com.batherphilippa.pin_it_app_be.repository.TaskRepo;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -37,7 +36,7 @@ public class TaskService implements ITaskService {
 
     @Override
     public Task getTaskById(long taskId) throws TaskNotFoundException {
-        return taskRepo.getTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
+        return taskRepo.findTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
     }
 
     @Override
@@ -53,21 +52,21 @@ public class TaskService implements ITaskService {
     public void saveTasks(Set<TaskUpdatedDTOIn> taskSet) {
         taskSet.forEach((task) -> {
             System.out.println(task.getTaskStatus());
-            taskRepo.updateTaskPositionById(task.getId(), task.getTaskPosition(), task.getTaskStatus());
+            taskRepo.updateTaskById(task.getId(), task.getDeadline(), task.getDescription(), task.getPriorityLevel(), task.getTitle(), task.getTaskPosition(), task.getTaskStatus());
         });
     }
 
     @Override
     public Task updateTaskById(long taskId, TaskDTOIn taskDTOIn) throws TaskNotFoundException {
-        taskRepo.getTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
+        taskRepo.findTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
         taskRepo.updateTaskById(taskId, taskDTOIn.getDeadline(), taskDTOIn.getDescription(), taskDTOIn.getPriorityLevel(),
                 taskDTOIn.getTitle(), taskDTOIn.getTaskPosition(), taskDTOIn.getTaskStatus());
-        return taskRepo.getTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
+        return taskRepo.findTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
     }
 
     @Override
     public void deleteTaskById(long taskId) {
-        Task task = taskRepo.getTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
+        Task task = taskRepo.findTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
         taskRepo.delete(task);
     }
 

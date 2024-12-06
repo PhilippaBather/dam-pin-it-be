@@ -7,6 +7,7 @@ import com.batherphilippa.pin_it_app_be.exceptions.UnauthorisedException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserExistsException;
 import com.batherphilippa.pin_it_app_be.security.jwt.JwtResponse;
 import com.batherphilippa.pin_it_app_be.security.jwt.JwtUtils;
+import com.batherphilippa.pin_it_app_be.service.GuestService;
 import com.batherphilippa.pin_it_app_be.service.UserAuthService;
 import com.batherphilippa.pin_it_app_be.service.UserService;
 import jakarta.validation.Valid;
@@ -38,6 +39,8 @@ public class AuthController {
 
     @Autowired
     private UserAuthService authService;
+    @Autowired
+    private GuestService guestService;
     @Autowired
     private UserService userService;
 
@@ -76,6 +79,5 @@ public class AuthController {
         logger.info("end: AuthController_registerUser");
         return new ResponseEntity<>(userDTOOut, HttpStatus.CREATED);
     }
-
 
 }

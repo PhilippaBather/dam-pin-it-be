@@ -57,7 +57,7 @@ public class ProjectController {
 
     // TODO
     @PostMapping("/projects/users/{userId}")
-    public ResponseEntity<ProjectPermissionsDTOOut> addUserToExistingProject(@PathVariable String email, @Valid @RequestBody ProjectPermissionsDTOIn projectPermissionsDTOIn) throws UserNotFoundException {
+    public ResponseEntity<ProjectAndPermissionsDTOOut> addUserToExistingProject(@PathVariable String email, @Valid @RequestBody ProjectPermissionsDTOIn projectPermissionsDTOIn) throws UserNotFoundException {
         return null;
     }
 
@@ -74,5 +74,12 @@ public class ProjectController {
         projectService.deleteProjectById(projectId);
         return ResponseEntity.noContent().build();
     }
+/*
+    @GetMapping("/projects/owned-projects/{userId}")
+    public ResponseEntity<List<OwnerProjectGuestsDTOOut>> getOwnedProjectsAndGuests(@PathVariable long userId) throws UserNotFoundException {
+        User user = userService.findById(userId);
+        List<OwnerProjectGuestsDTOOut> ownedGuestProjectsSet = projectService.getGuestsOnOwnerProjects(user.getEmail(), user.getId());
+        return new ResponseEntity<>(ownedGuestProjectsSet, HttpStatus.OK);
+    }*/
 
 }

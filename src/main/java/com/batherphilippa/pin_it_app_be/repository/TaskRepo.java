@@ -24,22 +24,22 @@ public interface TaskRepo extends CrudRepository<Task, Long> {
             " WHERE t.project_id = :projectId;", nativeQuery = true)
     Set<Task> findAllTasksByProjectId(long projectId);
 
-    Optional<Task> getTaskById(long taskId);
+    Optional<Task> findTaskById(long taskId);
 
     @Transactional
     @Modifying(clearAutomatically=true) // clears non-flushed values from the EntityManager
     @Query(value = "UPDATE tasks t" +
-            " SET t.task_deadline =:deadline, t.task_description = :description, t.priority_level = :priorityLevel," +
+            " SET t.task_deadline = :deadline, t.task_description = :description, t.priority_level = :priorityLevel," +
             " t.task_title = :title, t.task_position = :taskPosition, t.task_status = :taskStatus " +
             " WHERE t.task_id = :taskId;", nativeQuery = true)
     void updateTaskById(long taskId, LocalDate deadline, String description, Priority priorityLevel, String title, int taskPosition, TaskStatus taskStatus);
 
-    @Transactional
+    /*@Transactional
     @Modifying(clearAutomatically=true) // clears non-flushed values from the EntityManager
     @Query(value = "UPDATE tasks t" +
             " SET t.task_position = :taskPosition, t.task_status = :taskStatus " +
             " WHERE t.task_id = :taskId;", nativeQuery = true)
-    void updateTaskPositionById(long taskId, int taskPosition, TaskStatus taskStatus);
+    void updateTaskPositionById(long taskId, int taskPosition, TaskStatus taskStatus);*/
 
     @Transactional
     @Modifying

@@ -1,7 +1,6 @@
 package com.batherphilippa.pin_it_app_be.service;
 
 import com.batherphilippa.pin_it_app_be.dto.TaskDTOIn;
-import com.batherphilippa.pin_it_app_be.dto.TaskDetailsDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.TaskUpdatedDTOIn;
 import com.batherphilippa.pin_it_app_be.model.Task;
 

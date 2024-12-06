@@ -4,7 +4,11 @@ import com.batherphilippa.pin_it_app_be.dto.UserDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.UserDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.UserExistsException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
+import com.batherphilippa.pin_it_app_be.model.Permissions;
+import com.batherphilippa.pin_it_app_be.model.Project;
+import com.batherphilippa.pin_it_app_be.model.ProjectUser;
 import com.batherphilippa.pin_it_app_be.model.User;
+import com.batherphilippa.pin_it_app_be.repository.ProjectUserRepo;
 import com.batherphilippa.pin_it_app_be.repository.UserRepo;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -16,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -27,11 +32,15 @@ public class UserAuthService implements UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserAuthService.class);
 
     private final ModelMapper modelMapper;
+    private final GuestService guestService;
+    private final ProjectUserRepo projectUserRepo;
 
     private final UserRepo userRepo;
 
-    public UserAuthService(ModelMapper modelMapper, UserRepo userRepo) {
+    public UserAuthService(ModelMapper modelMapper, GuestService guestService, ProjectUserRepo projectUserRepo, UserRepo userRepo) {
         this.modelMapper = modelMapper;
+        this.guestService = guestService;
+        this.projectUserRepo = projectUserRepo;
         this.userRepo = userRepo;
     }
 
@@ -58,8 +67,6 @@ public class UserAuthService implements UserDetailsService {
         }
     }
 
-
-
     public UserDTOOut save(UserDTOIn userDTOIn) {
         User user = new User();
         // map to User entity used in the DB
@@ -74,6 +81,5 @@ public class UserAuthService implements UserDetailsService {
         logger.info("UserService: user registration");
         return userDTOOut;
     }
-
 
 }

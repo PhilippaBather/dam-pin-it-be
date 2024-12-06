@@ -18,7 +18,7 @@ import java.util.Set;
 public interface ProjectUserRepo extends CrudRepository<ProjectUser, Long> {
 
     ProjectUser findProjectUserByProjectIdAndUserId(long projectId, long userId);
-    @Query(value = "SELECT pu.project_id, pu.user_id, pu.permissions," +
+    @Query(value = "SELECT pu.project_id, pu.user_id, pu.permissions, " +
             " p.title, p.description, p.created_on, p.deadline, p.project_status " +
             " FROM project_user pu " +
             " INNER JOIN projects p ON pu.project_id = p.project_id" +
@@ -43,4 +43,9 @@ public interface ProjectUserRepo extends CrudRepository<ProjectUser, Long> {
             " WHERE pu.user_id = :userId;", nativeQuery = true)
     void deleteAllByUserId(long userId) throws UserNotFoundException;
 
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM project_user pu " +
+            "WHERE pu.user_id = :userId AND pu.project_id = :projectId;", nativeQuery = true)
+    void deleteByUserIdAndProjectId(long userId, long projectId);
 }
