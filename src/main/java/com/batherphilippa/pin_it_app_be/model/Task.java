@@ -28,7 +28,7 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id", updatable = false, nullable = false)
-    private long id;
+    private Long id;
 
     @NotBlank(message = VALIDATION_TASK_TITLE_NOT_BLANK)
     @Size(min = 2, max = 50, message = VALIDATION_TASK_TITLE_SIZE)

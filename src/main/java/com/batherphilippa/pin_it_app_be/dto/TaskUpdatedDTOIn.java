@@ -9,13 +9,14 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
- * TaskDTOIn - defines the data transfer object for an incoming task object.
+ * TaskUpdatedDTOIn - defines the data transfer object for an incoming task object to be modified.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskDTOIn {
+public class TaskUpdatedDTOIn {
 
+    private long id;
     private String title;
     private String description;
     private LocalDate deadline;

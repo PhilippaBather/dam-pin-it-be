@@ -1,6 +1,7 @@
 package com.batherphilippa.pin_it_app_be.controller;
 
 import com.batherphilippa.pin_it_app_be.dto.TaskDTOIn;
+import com.batherphilippa.pin_it_app_be.dto.TaskUpdatedDTOIn;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.TaskNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
@@ -46,14 +47,25 @@ public class TaskController {
 
     }
     @PostMapping("/tasks/user/{userId}/project/{projectId}")
-    public ResponseEntity<TaskDTOIn> saveTask(@PathVariable long userId, @PathVariable long projectId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws ProjectNotFoundException, UserNotFoundException {
+    public ResponseEntity<Task> saveTask(@PathVariable long userId, @PathVariable long projectId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws ProjectNotFoundException {
         logger.info("TaskController: saveTask");
         // check project and user exist or throw corresponding exception
         projectService.getProjectById(projectId, userId);
         userService.findById(userId);
         // save task
-        taskService.saveTask(taskDTOIn);
-        return new ResponseEntity<>(taskDTOIn, HttpStatus.CREATED);
+        Task task = taskService.saveTask(taskDTOIn);
+        return new ResponseEntity<>(task, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/tasks-list/user/{userId}/project/{projectId}")
+    public ResponseEntity<Void> saveModifiedTasksInColumn(@PathVariable long userId, @PathVariable long projectId, @Valid @RequestBody Set<TaskUpdatedDTOIn> tasksSet) throws ProjectNotFoundException {
+        logger.info("TaskController: saveModifiedTasksInColumn");
+        // check project and user exist or throw corresponding exception
+        projectService.getProjectById(projectId, userId);
+        userService.findById(userId);
+        // save tasks
+        taskService.saveTasks(tasksSet);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/tasks/user/{userId}/project/{projectId}")

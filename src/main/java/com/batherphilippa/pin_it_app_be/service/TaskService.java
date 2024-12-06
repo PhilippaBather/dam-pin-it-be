@@ -1,11 +1,11 @@
 package com.batherphilippa.pin_it_app_be.service;
 
 import com.batherphilippa.pin_it_app_be.dto.TaskDTOIn;
+import com.batherphilippa.pin_it_app_be.dto.TaskUpdatedDTOIn;
 import com.batherphilippa.pin_it_app_be.exceptions.TaskNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.Task;
 import com.batherphilippa.pin_it_app_be.model.TaskStatus;
 import com.batherphilippa.pin_it_app_be.repository.TaskRepo;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,20 +41,27 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public void saveTask(TaskDTOIn taskDTOIn) {
+    public Task saveTask(TaskDTOIn taskDTOIn) {
         Task task = new Task();
         modelMapper.map(taskDTOIn, task);
-        task.setTaskStatus(TaskStatus.setTaskStatusByNum(taskDTOIn.getTaskStatus()));
+        task.setId(null);
         logger.info("TaskController: save task");
-        taskRepo.save(taskDTOIn.getDeadline(), taskDTOIn.getDescription(), taskDTOIn.getPriorityLevel(), taskDTOIn.getTaskPosition(),
-                TaskStatus.setTaskStatusByNum(taskDTOIn.getTaskStatus()), taskDTOIn.getTitle(), taskDTOIn.getProjectId());
+        return taskRepo.save(task);
+    }
+
+    @Override
+    public void saveTasks(Set<TaskUpdatedDTOIn> taskSet) {
+        taskSet.forEach((task) -> {
+            System.out.println(task.getTaskStatus());
+            taskRepo.updateTaskPositionById(task.getId(), task.getTaskPosition(), task.getTaskStatus());
+        });
     }
 
     @Override
     public Task updateTaskById(long taskId, TaskDTOIn taskDTOIn) throws TaskNotFoundException {
         taskRepo.getTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
         taskRepo.updateTaskById(taskId, taskDTOIn.getDeadline(), taskDTOIn.getDescription(), taskDTOIn.getPriorityLevel(),
-                taskDTOIn.getTitle(), taskDTOIn.getTaskPosition(), TaskStatus.setTaskStatusByNum(taskDTOIn.getTaskStatus()));
+                taskDTOIn.getTitle(), taskDTOIn.getTaskPosition(), taskDTOIn.getTaskStatus());
         return taskRepo.getTaskById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
     }
 
