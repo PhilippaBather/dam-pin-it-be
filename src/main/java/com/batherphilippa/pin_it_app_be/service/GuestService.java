@@ -151,8 +151,9 @@ public class GuestService implements IGuestService {
 
     private List<ProjectDTOOut> getProjects(long userId) {
         Set<ProjectUser> projectUserSet = projectUserRepo.findAllUsersProjects(userId);
+        Set<ProjectUser> filteredProjectUserSet = projectUserSet.stream().filter(pu -> pu.getPermissions() == Permissions.OWNER).collect(Collectors.toSet());
         List<ProjectDTOOut> projectDTOOutList = new ArrayList<>();
-        for(ProjectUser pu : projectUserSet) {
+        for(ProjectUser pu : filteredProjectUserSet) {
             Optional<Project> projectOptional = projectRepo.findById(pu.getProject().getId());
             if(projectOptional.isPresent()) {
                 ProjectDTOOut projectDTOOut = new ProjectDTOOut();
