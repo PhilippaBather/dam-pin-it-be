@@ -115,7 +115,7 @@ public class GuestService implements IGuestService {
     private void updateProjectUserPermissions(GuestDTOIn guestDTOIn, long projectId) {
         User user = userRepo.findByEmail(guestDTOIn.getEmail()).orElseThrow(() -> new UserNotFoundException(guestDTOIn.getEmail()));
         ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(projectId, user.getId());
-        if (user != null && projectUser != null) {
+        if (projectUser != null) {
             projectUser.setPermissions(guestDTOIn.getPermissions());
         }
     }
