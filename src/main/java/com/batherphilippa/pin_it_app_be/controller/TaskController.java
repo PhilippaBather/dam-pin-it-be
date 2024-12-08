@@ -69,7 +69,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/tasks/user/{userId}/project/{projectId}")
-    public ResponseEntity<Void> deleteAllTasksByProjectId(@PathVariable long userId, @PathVariable long projectId) throws ProjectNotFoundException {
+    public ResponseEntity<Void> deleteAllTasksByProjectId(@PathVariable long userId, @PathVariable long projectId) throws UserNotFoundException, ProjectNotFoundException {
         logger.info("TaskController: deleteAllTasksByProjectId");
         // check project and user exist or throw corresponding exception
         projectService.getProjectById(projectId, userId);
@@ -92,8 +92,8 @@ public class TaskController {
     public ResponseEntity<Task> updateTaskById(@PathVariable long projectId, @PathVariable long userId, @PathVariable long taskId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws ProjectNotFoundException, UserNotFoundException, TaskNotFoundException {
         logger.info("TaskController: updateTaskById");
         // check project and user exist or throw corresponding exception
-        projectService.getProjectById(projectId, userId);
         userService.findById(userId);
+        projectService.getProjectById(projectId, userId);
         Task task = taskService.updateTaskById(taskId, taskDTOIn);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
@@ -102,8 +102,8 @@ public class TaskController {
     public ResponseEntity<Void> deleteTaskById(@PathVariable long projectId, @PathVariable long userId, @PathVariable long taskId) throws ProjectNotFoundException, UserNotFoundException, TaskNotFoundException {
         logger.info("TaskController: deleteTaskById");
         // check project and user exist or throw corresponding exception
-        projectService.getProjectById(projectId, userId);
         userService.findById(userId);
+        projectService.getProjectById(projectId, userId);
         taskService.deleteTaskById(taskId);
         return ResponseEntity.noContent().build();
     }
