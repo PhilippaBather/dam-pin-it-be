@@ -98,7 +98,7 @@ public class GuestController {
         return ResponseEntity.noContent().build();
     }
 
-    private void sendEmail(String recipient, String subject, String body) throws SendFailedException {
+    void sendEmail(String recipient, String subject, String body) throws SendFailedException {
         Email email = new Email(recipient, SENDER, subject, body);
         this.emailService.sendEmail(email);
     }

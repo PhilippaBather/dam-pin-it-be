@@ -104,8 +104,6 @@ public class UserService implements IUserService{
 
         for (Map.Entry<Project, Permissions> entry : guestProjects.entrySet()) {
             user.getProjectsSet().add(entry.getKey());
-            //entry.getKey().getProjectUsers().add(user);
-            //projectService.save(entry.getKey());
         }
         User savedUser = userRepo.save(user);
 
