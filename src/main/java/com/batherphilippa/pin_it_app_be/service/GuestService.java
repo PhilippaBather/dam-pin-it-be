@@ -130,17 +130,20 @@ public class GuestService implements IGuestService {
 
     @Override
     public void deleteGuest(long projectId, User user) throws ProjectNotFoundException {
+        // delete guests who are registered users
         Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
         guestRepo.deleteByProjectIdAndGuestEmail(project.getId(), user.getEmail());
         projectUserRepo.deleteByUserIdAndProjectId(user.getId(), projectId);
+        // delete guests who have yet to register
+
     }
     @Override
     public void deleteGuest(long projectId, String guestEmail) throws ProjectNotFoundException {
         logger.info("GuestService: deleteGuest");
         Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
         guestRepo.deleteByProjectIdAndGuestEmail(project.getId(), guestEmail);
-        User user = userRepo.findByEmail(guestEmail).orElseThrow(() -> new UserNotFoundException(guestEmail));
-        projectUserRepo.deleteByUserIdAndProjectId(user.getId(), projectId);
+        Optional<User> user = userRepo.findByEmail(guestEmail);
+        user.ifPresent(value -> projectUserRepo.deleteByUserIdAndProjectId(value.getId(), projectId));
     }
 
     @Override

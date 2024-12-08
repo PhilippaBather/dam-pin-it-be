@@ -53,9 +53,10 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    public ProjectAndPermissionsDTOOut getProjectById(long projectId, long userId) throws ProjectNotFoundException {
+    public ProjectAndPermissionsDTOOut getProjectById(long projectId, long userId) throws ProjectNotFoundException, UserNotFoundException {
         Project project = projectRepo.findByProjectId(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
-        ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(projectId, userId);
+        User user = userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(project.getId(), user.getId());
         ProjectAndPermissionsDTOOut projectOut = new ProjectAndPermissionsDTOOut();
         if(project != null) {
             modelMapper.map(project, projectOut);

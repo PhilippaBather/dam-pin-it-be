@@ -54,12 +54,12 @@ public class ProjectController {
         logger.info("ProjectController: saveProject");
         return new ResponseEntity<>(projectDTOOut, HttpStatus.CREATED);
     }
-
+/*
     // TODO
     @PostMapping("/projects/users/{userId}")
     public ResponseEntity<ProjectAndPermissionsDTOOut> addUserToExistingProject(@PathVariable String email, @Valid @RequestBody ProjectPermissionsDTOIn projectPermissionsDTOIn) throws UserNotFoundException {
         return null;
-    }
+    }*/
 
     @PutMapping("/project/{projectId}")
     public ResponseEntity<ProjectAndPermissionsDTOOut> updateProjectById(@PathVariable long projectId, @Valid @RequestBody ProjectDTOIn projectDTOIn) throws ProjectNotFoundException {
