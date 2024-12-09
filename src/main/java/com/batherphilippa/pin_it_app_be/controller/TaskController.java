@@ -46,6 +46,7 @@ public class TaskController {
         return new ResponseEntity<>(taskSet, HttpStatus.OK);
 
     }
+
     @PostMapping("/tasks/user/{userId}/project/{projectId}")
     public ResponseEntity<Task> saveTask(@PathVariable long userId, @PathVariable long projectId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws ProjectNotFoundException {
         logger.info("TaskController: saveTask");
@@ -107,4 +108,5 @@ public class TaskController {
         taskService.deleteTaskById(taskId);
         return ResponseEntity.noContent().build();
     }
+
 }
