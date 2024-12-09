@@ -18,4 +18,5 @@ public interface ITaskService {
     Task updateTaskById(long taskId, TaskDTOIn taskDTOIn);
     void deleteTaskById(long taskId);
     void deleteAllTasksByProjectId(long projectId);
+
 }

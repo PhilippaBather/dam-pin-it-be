@@ -1,5 +1,6 @@
 package com.batherphilippa.pin_it_app_be.service;
 
+import com.batherphilippa.pin_it_app_be.controller.TaskController;
 import com.batherphilippa.pin_it_app_be.dto.TaskDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.TaskUpdatedDTOIn;
 import com.batherphilippa.pin_it_app_be.exceptions.TaskNotFoundException;
@@ -17,8 +18,7 @@ import java.util.Set;
  */
 @Service
 public class TaskService implements ITaskService {
-
-    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
     private final ModelMapper modelMapper;
     private final TaskRepo taskRepo;
@@ -70,9 +70,9 @@ public class TaskService implements ITaskService {
         taskRepo.delete(task);
     }
 
-
     @Override
     public void deleteAllTasksByProjectId(long projectId) {
         taskRepo.deleteAllByProjectId(projectId);
     }
+
 }
