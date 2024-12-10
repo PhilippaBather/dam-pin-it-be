@@ -5,6 +5,7 @@ import com.batherphilippa.pin_it_app_be.dto.TaskDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.TaskUpdatedDTOIn;
 import com.batherphilippa.pin_it_app_be.exceptions.TaskNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.Task;
+import com.batherphilippa.pin_it_app_be.repository.CommentRepo;
 import com.batherphilippa.pin_it_app_be.repository.TaskRepo;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -21,9 +22,11 @@ public class TaskService implements ITaskService {
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
     private final ModelMapper modelMapper;
+    private final CommentRepo commentRepo;
     private final TaskRepo taskRepo;
 
-    public TaskService(TaskRepo taskRepo, ModelMapper modelMapper) {
+    public TaskService(CommentRepo commentRepo, TaskRepo taskRepo, ModelMapper modelMapper) {
+        this.commentRepo = commentRepo;
         this.taskRepo = taskRepo;
         this.modelMapper = modelMapper;
     }
@@ -72,6 +75,12 @@ public class TaskService implements ITaskService {
 
     @Override
     public void deleteAllTasksByProjectId(long projectId) {
+        // get all tasks on project
+        Set<Task> tasks = taskRepo.findAllTasksByProjectId(projectId);
+        // delete all comments on task
+        for (Task task : tasks) {
+            commentRepo.deleteByTaskId(task.getId());
+        }
         taskRepo.deleteAllByProjectId(projectId);
     }
 

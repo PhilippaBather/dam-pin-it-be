@@ -4,6 +4,7 @@ import com.batherphilippa.pin_it_app_be.dto.*;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
 import com.batherphilippa.pin_it_app_be.model.Project;
+import com.batherphilippa.pin_it_app_be.model.ProjectUser;
 import com.batherphilippa.pin_it_app_be.model.User;
 
 import java.util.List;
@@ -24,4 +25,5 @@ public interface IProjectService {
     void deleteProjectById(long projectId) throws ProjectNotFoundException;
     void deleteUserProjectsOnDeleteUser(User user);
     List<OwnerProjectGuestsDTOOut> getGuestsOnOwnerProjects(String userEmail, long userId);
+    ProjectUser validatePermissions(long projectId, long userId);
 }

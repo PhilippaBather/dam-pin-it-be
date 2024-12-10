@@ -44,7 +44,7 @@ public class Project {
     @CreationTimestamp
     @DateTimeFormat
     @Column(name = "created_on")
-    LocalDate creationDate; // TODO: set at the BE
+    LocalDate creationDate;
 
     @Column(name = "project_status")
     private ProjectStatus projectStatus;
