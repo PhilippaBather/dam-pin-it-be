@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.batherphilippa.pin_it_app_be.constants.ValidationMessages.*;
 
@@ -60,4 +62,8 @@ public class Task {
     @JsonBackReference(value = "projects_tasks")
     @JoinColumn(name = "project_id")
     private Project project;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskComment> taskCommentList = new ArrayList<>();
+
 }

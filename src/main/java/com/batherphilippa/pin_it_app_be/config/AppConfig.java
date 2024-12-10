@@ -105,7 +105,8 @@ public class AppConfig {
                                         "/tasks-list/user/*/project/*", "task/*/user/*/project/*",
                                         "/guests", "/guests/shared-projects/*", "/guests/*/shared-projects/*",
                                         "/guests/owned-projects", "/guests/owned-projects/*",
-                                         "/guests/owned-projects/guest/*/project/*").permitAll()
+                                         "/guests/owned-projects/guest/*/project/*",
+                                        "/comments/*", "/comments/*/user/*").permitAll()
                                 .anyRequest().authenticated()
                 );
 
