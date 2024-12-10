@@ -125,7 +125,7 @@ public class AppConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         logger.info("AppConfig_webSecurityCustomizer");
         return (web) -> web.ignoring().requestMatchers(
-                "/users/auth/signup", "/projects/owned-projects/*");
+                "/users/auth/signup", "/projects/owned-projects/*", "/users/pswd-reset/*");
     }
 
     @Bean
