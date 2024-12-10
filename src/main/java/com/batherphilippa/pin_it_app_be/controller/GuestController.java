@@ -6,11 +6,9 @@ import com.batherphilippa.pin_it_app_be.dto.GuestDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.ProjectDTOOut;
 import com.batherphilippa.pin_it_app_be.dto.SharedProjectsDTOOut;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
+import com.batherphilippa.pin_it_app_be.exceptions.UserNotAuthorisedException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
-import com.batherphilippa.pin_it_app_be.model.Email;
-import com.batherphilippa.pin_it_app_be.model.Guest;
-import com.batherphilippa.pin_it_app_be.model.Project;
-import com.batherphilippa.pin_it_app_be.model.User;
+import com.batherphilippa.pin_it_app_be.model.*;
 import com.batherphilippa.pin_it_app_be.service.EmailService;
 import com.batherphilippa.pin_it_app_be.service.GuestService;
 import com.batherphilippa.pin_it_app_be.service.ProjectService;
@@ -49,7 +47,11 @@ public class GuestController {
     }
 
     @PostMapping("/guests")
-    public ResponseEntity<Guest> handleGuestInvitation(@Valid @RequestBody GuestDTOIn guestDTOIn) throws SendFailedException, HttpClientErrorException.UnprocessableEntity {
+    public ResponseEntity<Guest> handleGuestInvitation(@Valid @RequestBody GuestDTOIn guestDTOIn) throws UserNotAuthorisedException, SendFailedException, HttpClientErrorException.UnprocessableEntity {
+        ProjectUser projectUser = projectService.validatePermissions(guestDTOIn.getProjectId(), guestDTOIn.getUserId());
+        if(projectUser.getPermissions() != Permissions.OWNER) {
+            throw new UserNotAuthorisedException(guestDTOIn.getUserId());
+        }
         // save guest
         User user = userService.findById(guestDTOIn.getUserId());
         Project project = projectService.getProjectByIdForGuest(guestDTOIn.getProjectId(), guestDTOIn.getUserId());

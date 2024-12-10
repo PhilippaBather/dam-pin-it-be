@@ -4,7 +4,10 @@ import com.batherphilippa.pin_it_app_be.dto.TaskDTOIn;
 import com.batherphilippa.pin_it_app_be.dto.TaskUpdatedDTOIn;
 import com.batherphilippa.pin_it_app_be.exceptions.ProjectNotFoundException;
 import com.batherphilippa.pin_it_app_be.exceptions.TaskNotFoundException;
+import com.batherphilippa.pin_it_app_be.exceptions.UserNotAuthorisedException;
 import com.batherphilippa.pin_it_app_be.exceptions.UserNotFoundException;
+import com.batherphilippa.pin_it_app_be.model.Permissions;
+import com.batherphilippa.pin_it_app_be.model.ProjectUser;
 import com.batherphilippa.pin_it_app_be.model.Task;
 import com.batherphilippa.pin_it_app_be.service.ProjectService;
 import com.batherphilippa.pin_it_app_be.service.TaskService;
@@ -48,9 +51,13 @@ public class TaskController {
     }
 
     @PostMapping("/tasks/user/{userId}/project/{projectId}")
-    public ResponseEntity<Task> saveTask(@PathVariable long userId, @PathVariable long projectId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws ProjectNotFoundException {
+    public ResponseEntity<Task> saveTask(@PathVariable long userId, @PathVariable long projectId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws UserNotAuthorisedException, ProjectNotFoundException {
         logger.info("TaskController: saveTask");
         // check project and user exist or throw corresponding exception
+        ProjectUser projectUser = projectService.validatePermissions(projectId, userId);
+        if (projectUser.getPermissions() == Permissions.VIEWER) {
+            throw new UserNotAuthorisedException(userId);
+        }
         projectService.getProjectById(projectId, userId);
         userService.findById(userId);
         // save task
@@ -70,8 +77,12 @@ public class TaskController {
     }
 
     @DeleteMapping("/tasks/user/{userId}/project/{projectId}")
-    public ResponseEntity<Void> deleteAllTasksByProjectId(@PathVariable long userId, @PathVariable long projectId) throws UserNotFoundException, ProjectNotFoundException {
+    public ResponseEntity<Void> deleteAllTasksByProjectId(@PathVariable long userId, @PathVariable long projectId) throws UserNotAuthorisedException, UserNotFoundException, ProjectNotFoundException {
         logger.info("TaskController: deleteAllTasksByProjectId");
+        ProjectUser projectUser = projectService.validatePermissions(projectId, userId);
+        if (projectUser.getPermissions() == Permissions.VIEWER || projectUser.getPermissions() == Permissions.EDITOR_RW) {
+            throw new UserNotAuthorisedException(userId);
+        }
         // check project and user exist or throw corresponding exception
         projectService.getProjectById(projectId, userId);
         userService.findById(userId);
@@ -93,6 +104,10 @@ public class TaskController {
     public ResponseEntity<Task> updateTaskById(@PathVariable long projectId, @PathVariable long userId, @PathVariable long taskId, @Valid @RequestBody TaskDTOIn taskDTOIn) throws ProjectNotFoundException, UserNotFoundException, TaskNotFoundException {
         logger.info("TaskController: updateTaskById");
         // check project and user exist or throw corresponding exception
+        ProjectUser projectUser = projectService.validatePermissions(projectId, userId);
+        if(projectUser.getPermissions() == Permissions.VIEWER) {
+            throw new UserNotAuthorisedException(userId);
+        }
         userService.findById(userId);
         projectService.getProjectById(projectId, userId);
         Task task = taskService.updateTaskById(taskId, taskDTOIn);
@@ -100,9 +115,13 @@ public class TaskController {
     }
 
     @DeleteMapping("/task/{taskId}/user/{userId}/project/{projectId}")
-    public ResponseEntity<Void> deleteTaskById(@PathVariable long projectId, @PathVariable long userId, @PathVariable long taskId) throws ProjectNotFoundException, UserNotFoundException, TaskNotFoundException {
+    public ResponseEntity<Void> deleteTaskById(@PathVariable long projectId, @PathVariable long userId, @PathVariable long taskId) throws UserNotAuthorisedException, ProjectNotFoundException, UserNotFoundException, TaskNotFoundException {
         logger.info("TaskController: deleteTaskById");
         // check project and user exist or throw corresponding exception
+        ProjectUser projectUser = projectService.validatePermissions(projectId, userId);
+        if (projectUser.getPermissions() == Permissions.VIEWER || projectUser.getPermissions() == Permissions.EDITOR_RW) {
+            throw new UserNotAuthorisedException(userId);
+        }
         userService.findById(userId);
         projectService.getProjectById(projectId, userId);
         taskService.deleteTaskById(taskId);

@@ -101,7 +101,7 @@ public class AppConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers("/no-csrf","/users/auth/login", "/users", "/projects/*" ,
-                                        "/project/*", "project/user/*/project/*", "/tasks/user/*/project/*",
+                                        "/project/*", "project/*/user/*", "project/user/*/project/*", "/tasks/user/*/project/*",
                                         "/tasks-list/user/*/project/*", "task/*/user/*/project/*",
                                         "/guests", "/guests/shared-projects/*", "/guests/*/shared-projects/*",
                                         "/guests/owned-projects", "/guests/owned-projects/*",

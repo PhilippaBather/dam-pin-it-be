@@ -23,12 +23,14 @@ public class ProjectService implements IProjectService {
 
     private final ProjectRepo projectRepo;
     private final ProjectUserRepo projectUserRepo;
+    private final TaskService taskService;
     private final GuestRepo guestRepo;
     private final TaskRepo taskRepo;
     private final UserRepo userRepo;
     private final ModelMapper modelMapper;
 
-    public ProjectService(GuestRepo guestRepo, ProjectRepo projectRepo, ProjectUserRepo projectUserRepo, TaskRepo taskRepo, UserRepo userRepo, ModelMapper modelMapper) {
+    public ProjectService(TaskService taskService, GuestRepo guestRepo, ProjectRepo projectRepo, ProjectUserRepo projectUserRepo, TaskRepo taskRepo, UserRepo userRepo, ModelMapper modelMapper) {
+        this.taskService = taskService;
         this.guestRepo = guestRepo;
         this.projectRepo = projectRepo;
         this.projectUserRepo = projectUserRepo;
@@ -122,6 +124,7 @@ public class ProjectService implements IProjectService {
     @Override
     public void deleteProjectById(long projectId) throws ProjectNotFoundException {
         Project project = projectRepo.findById(projectId).orElseThrow(() -> new ProjectNotFoundException(projectId));
+        taskService.deleteAllTasksByProjectId(projectId);
         // delete associated tasks in Tasks table
         taskRepo.deleteAllByProjectId(projectId);
         LOGGER.info("ProjectService: deleteProject by Id: associated tasks deleted");
@@ -145,7 +148,6 @@ public class ProjectService implements IProjectService {
         projects.forEach((project) -> projectRepo.deleteAllUserOwnedProjects(project.getId()));
     }
 
-    // TODO remove
     @Override
     public List<OwnerProjectGuestsDTOOut> getGuestsOnOwnerProjects(String userEmail, long userId) {
         List<Project> test = projectRepo.findGuestsOnOwnedProjects(userEmail, userId);
@@ -174,6 +176,12 @@ public class ProjectService implements IProjectService {
             projectUserDTOOutSet.add(projectUserDTOOut);
         }
         return projectUserDTOOutSet;
+    }
+
+    @Override
+    public ProjectUser validatePermissions(long projectId, long userId) {
+        ProjectUser projectUser = projectUserRepo.findProjectUserByProjectIdAndUserId(projectId, userId);
+        return projectUser;
     }
 
 }
